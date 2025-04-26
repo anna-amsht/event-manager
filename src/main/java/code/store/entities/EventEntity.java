@@ -32,10 +32,10 @@ public class EventEntity {
 
     @ManyToOne
     @JoinColumn(name = "organizer_id")
-    UserEntity organizer;
+    ParticipantEntity organizer;
 
     @Builder.Default
     @OneToMany
     @JoinColumn(name = "user_id")
-    List<UserEntity> participants = new ArrayList<>();
+    List<ParticipantEntity> participants = new ArrayList<>();
 }

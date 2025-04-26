@@ -22,5 +22,5 @@ public class ReservationEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    UserEntity user;
+    ParticipantEntity user;
 }
