@@ -1,5 +1,6 @@
 package code.store.entities;
 
+
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -13,20 +14,22 @@ import java.util.List;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-@Table(name="participants")
-public class ParticipantEntity {
-
+@Table(name = "organizers")
+public class OrganizerEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Long id;
 
+
     String username;
     String password;
 
+    @OneToMany(mappedBy = "organizer")
+    List<EventEntity> eventsCreated;
 
-    @OneToMany(mappedBy = "participant")
-    List<ReservationEntity> reservations;
+    @OneToMany(mappedBy = "organizer")
+    List<EventEntity> events;
 
-    @OneToMany(mappedBy = "participant")
-    List<InvitationEntity> invitations;
+
+
 }

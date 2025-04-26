@@ -18,5 +18,19 @@ public class InvitationEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "event_id")
+    EventEntity event;
+
+    @ManyToOne
+    @JoinColumn(name = "participant_id")
+    ParticipantEntity participant;
+
+    @ManyToOne
+    @JoinColumn(name = "organizer_id")
+    OrganizerEntity organizer;
+
+    @Enumerated(EnumType.STRING)
+    InvitationStatus status;
 
 }

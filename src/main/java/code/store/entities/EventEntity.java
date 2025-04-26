@@ -17,11 +17,13 @@ import java.util.List;
 @Entity
 @Table(name="events")
 public class EventEntity {
+
     @Id
-    private Long id;
+    Long id;
 
     @Column(unique = true)
     String title;
+
     String description;
 
     @Column(nullable = false)
@@ -32,10 +34,6 @@ public class EventEntity {
 
     @ManyToOne
     @JoinColumn(name = "organizer_id")
-    ParticipantEntity organizer;
+    OrganizerEntity organizer;
 
-    @Builder.Default
-    @OneToMany
-    @JoinColumn(name = "user_id")
-    List<ParticipantEntity> participants = new ArrayList<>();
 }
