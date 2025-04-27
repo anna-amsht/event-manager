@@ -1,37 +1,36 @@
-package code.store.entities;
+package code.api.dto;
 
-import jakarta.persistence.*;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Entity
-@Table(name="events")
-public class EventEntity {
-
-    @Id
+public class EventDto {
+    @NonNull
     Long id;
 
-    @Column(unique = true)
+    @NonNull
     String title;
 
+    @NonNull
     String description;
 
-    @Column(nullable = false)
+    @NonNull
     Integer numberOfSeats;
 
+    @NonNull
     LocalDateTime dateTime;
+
+    @NonNull
     String location;
 
-    @ManyToOne
-    @JoinColumn(name = "organizer_id")
-    OrganizerEntity organizer;
+    @NonNull
+    Long organizerId;
 
 }
