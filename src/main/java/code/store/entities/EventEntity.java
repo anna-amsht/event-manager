@@ -1,10 +1,13 @@
 package code.store.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,7 +26,7 @@ public class EventEntity {
     String title;
 
     String description;
-
+    @Min(0)
     @Column(nullable = false)
     Integer numberOfSeats;
 
@@ -33,5 +36,9 @@ public class EventEntity {
     @ManyToOne
     @JoinColumn(name = "organizer_id")
     OrganizerEntity organizer;
+
+    @OneToMany(mappedBy = "event")
+    private List<ParticipantEntity> participants = new ArrayList<>();
+
 
 }
