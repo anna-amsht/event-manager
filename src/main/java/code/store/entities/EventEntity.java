@@ -40,5 +40,4 @@ public class EventEntity {
     @OneToMany(mappedBy = "event")
     private List<ParticipantEntity> participants = new ArrayList<>();
 
-
 }

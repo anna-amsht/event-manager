@@ -22,17 +22,10 @@ public class EventService {
     public EventEntity createEvent(EventEntity eventEntity) {
 
         OrganizerEntity organizer = organizerRepository.findById(eventEntity.getOrganizer().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Организатор не найден"));
+                .orElseThrow(() -> new RuntimeException("Организатор не найден"));
+        eventEntity.setOrganizer(organizer);
 
-        EventEntity event = EventEntity.builder()
-                .id(eventEntity.getId())
-                .title(eventEntity.getTitle())
-                .description(eventEntity.getDescription())
-                .location(eventEntity.getLocation())
-                .dateTime(eventEntity.getDateTime())
-                .organizer(organizer)
-                .build();
-        return eventRepository.save(event);
+        return eventRepository.save(eventEntity);
 
     }
 
@@ -52,30 +45,17 @@ public class EventService {
         eventRepository.deleteById(eventId);
     }
 
-    public void registerParticipant(Long eventId, Long participantId) {
-        EventEntity event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new RuntimeException("Мероприятие не найдено"));
-
-        ParticipantEntity participant = participantRepository.findById(participantId)
-                .orElseThrow(() -> new RuntimeException("Участник не найден"));
-
+    public void registerParticipant(EventEntity event, ParticipantEntity participant) {
+        if (event.getParticipants().contains(participant)) {
+            throw new RuntimeException("Участник уже зарегистрирован на это мероприятие");
+        }
         if (event.getNumberOfSeats() <= 0) {
             throw new RuntimeException("Нет доступных мест для регистрации");
         }
-
         event.getParticipants().add(participant);
         event.setNumberOfSeats(event.getNumberOfSeats() - 1);
 
         eventRepository.save(event);
     }
-
-    public List<ParticipantEntity> getParticipantsOfEvent(Long eventId) {
-        EventEntity event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new RuntimeException("Мероприятие не найдено"));
-
-        return event.getParticipants();
-    }
-
-
 
 }

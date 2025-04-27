@@ -3,7 +3,6 @@ package code.store.services;
 import code.store.entities.EventEntity;
 import code.store.entities.OrganizerEntity;
 import code.store.repositories.EventRepository;
-import code.store.repositories.InvitationRepository;
 import code.store.repositories.OrganizerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,33 +12,51 @@ import org.springframework.stereotype.Service;
 public class OrganizerService {
 
     private  final OrganizerRepository organizerRepository;
-    private final EventRepository eventRepository;
+    private final EventService eventService;
 
     public OrganizerEntity registerOrganizer(OrganizerEntity organizerEntity) {
         return organizerRepository.save(organizerEntity);
     }
 
-    public EventEntity createEvent(Long organizerId, EventEntity event) {
+    public EventEntity createEvent(Long organizerId, EventEntity eventEntity) {
         OrganizerEntity organizer = organizerRepository.findById(organizerId)
-                .orElseThrow(() -> new IllegalArgumentException("Организатор не найден"));
+                .orElseThrow(() -> new RuntimeException("Организатор не найден"));
 
-        event.setOrganizer(organizer); // привязываем организатора к мероприятию
-        return eventRepository.save(event);
+        eventEntity.setOrganizer(organizer);
+        return eventService.createEvent(eventEntity);
     }
 
-    public EventEntity updateEvent(EventEntity event) {
-        if (eventRepository.existsById(event.getId())) {
-            return eventRepository.save(event);
-        } else {
-            throw new IllegalArgumentException("Мероприятие не найдено для обновления");
+    public EventEntity updateEvent(Long organizerId, EventEntity updatedEvent) {
+
+        OrganizerEntity organizer = organizerRepository.findById(organizerId)
+                .orElseThrow(() -> new RuntimeException("Организатор не найден"));
+
+
+        EventEntity existingEvent = eventService.getEventById(updatedEvent.getId());
+
+        if (!existingEvent.getOrganizer().getId().equals(organizer.getId())) {
+            throw new RuntimeException("Организатор не имеет права обновлять это мероприятие");
         }
+
+        existingEvent.setTitle(updatedEvent.getTitle());
+        existingEvent.setDescription(updatedEvent.getDescription());
+        existingEvent.setDateTime(updatedEvent.getDateTime());
+        existingEvent.setLocation(updatedEvent.getLocation());
+        existingEvent.setNumberOfSeats(updatedEvent.getNumberOfSeats());
+
+        return eventService.createEvent(existingEvent);
     }
 
-    public void deleteEvent(Long eventId) {
-        if (eventRepository.existsById(eventId)) {
-            eventRepository.deleteById(eventId);
-        } else {
-            throw new IllegalArgumentException("Мероприятие не найдено для удаления");
+    public void deleteEvent(Long organizerId, Long eventId) {
+        OrganizerEntity organizer = organizerRepository.findById(organizerId)
+                .orElseThrow(() -> new RuntimeException("Организатор не найден"));
+
+        EventEntity event = eventService.getEventById(eventId);
+
+        if (!event.getOrganizer().getId().equals(organizer.getId())) {
+            throw new RuntimeException("Организатор не имеет права удалить это мероприятие");
         }
+
+        eventService.deleteEvent(eventId);
     }
 }

@@ -1,9 +1,6 @@
 package code.store.services;
 
-import code.store.entities.EventEntity;
-import code.store.entities.InvitationEntity;
-import code.store.entities.OrganizerEntity;
-import code.store.entities.ParticipantEntity;
+import code.store.entities.*;
 import code.store.repositories.EventRepository;
 import code.store.repositories.InvitationRepository;
 import code.store.repositories.OrganizerRepository;
@@ -19,6 +16,7 @@ public class InvitationService {
     private final OrganizerRepository organizerRepository;
     private final EventRepository eventRepository;
     private final ParticipantRepository participantRepository;
+    private final EventService eventService;
 
     public void sendInvitation(Long organizerId, Long participantId, Long eventId) {
 
@@ -35,9 +33,25 @@ public class InvitationService {
                 .organizer(organizer)
                 .participant(participant)
                 .event(event)
+                .status(InvitationStatus.PENDING)
                 .build();
 
         invitationRepository.save(invitation);
+    }
+
+    public void acceptInvitation(Long invitationId) {
+        InvitationEntity invitation = invitationRepository.findById(invitationId)
+                .orElseThrow(() -> new RuntimeException("Приглашение не найдено"));
+
+        if (invitation.getStatus() != InvitationStatus.PENDING) {
+            throw new RuntimeException("Приглашение уже принято");
+        }
+
+        eventService.registerParticipant(invitation.getEvent(), invitation.getParticipant());
+
+        invitation.setStatus(InvitationStatus.ACCEPTED);
+        invitationRepository.save(invitation);
+
     }
 
     public void deleteInvitation(Long invitationId) {

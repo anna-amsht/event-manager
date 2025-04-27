@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -25,8 +26,9 @@ public class ParticipantEntity {
 
 
     @OneToMany(mappedBy = "participant")
-    List<ReservationEntity> reservations;
+    List<ReservationEntity> reservations = new ArrayList<>();
 
     @OneToMany(mappedBy = "participant")
     List<InvitationEntity> invitations;
+
 }

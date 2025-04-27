@@ -25,11 +25,6 @@ public class OrganizerEntity {
     String password;
 
     @OneToMany(mappedBy = "organizer")
-    List<EventEntity> eventsCreated;
-
-    @OneToMany(mappedBy = "organizer")
     List<EventEntity> events;
-
-
 
 }
