@@ -3,6 +3,7 @@ package code.store.services;
 import code.store.entities.EventEntity;
 import code.store.entities.OrganizerEntity;
 import code.store.entities.ParticipantEntity;
+import code.store.entities.ReservationEntity;
 import code.store.repositories.EventRepository;
 import code.store.repositories.OrganizerRepository;
 import code.store.repositories.ParticipantRepository;
@@ -46,14 +47,24 @@ public class EventService {
     }
 
     public void registerParticipant(EventEntity event, ParticipantEntity participant) {
-        if (event.getParticipants().contains(participant)) {
-            throw new RuntimeException("Участник уже зарегистрирован на это мероприятие");
+        for (ReservationEntity reservation : event.getReservations()) {
+            if (reservation.getParticipant().getId().equals(participant.getId())) {
+                throw new RuntimeException("Участник уже зарегистрирован на это мероприятие");
+            }
         }
+
         if (event.getNumberOfSeats() <= 0) {
             throw new RuntimeException("Нет доступных мест для регистрации");
         }
-        event.getParticipants().add(participant);
+
+        ReservationEntity reservation = new ReservationEntity();
+        reservation.setEvent(event);
+        reservation.setParticipant(participant);
+
+        event.getReservations().add(reservation);
+
         event.setNumberOfSeats(event.getNumberOfSeats() - 1);
+
 
         eventRepository.save(event);
     }

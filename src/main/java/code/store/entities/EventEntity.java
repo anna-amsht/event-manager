@@ -37,7 +37,6 @@ public class EventEntity {
     @JoinColumn(name = "organizer_id")
     OrganizerEntity organizer;
 
-    @OneToMany(mappedBy = "event")
-    private List<ParticipantEntity> participants = new ArrayList<>();
-
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+    private List<ReservationEntity> reservations = new ArrayList<>();
 }

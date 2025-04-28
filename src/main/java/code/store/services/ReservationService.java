@@ -29,7 +29,7 @@ public class ReservationService {
             throw new RuntimeException("Нет доступных мест для регистрации");
         }
 
-        boolean alreadyReserved = reservationRepository.isAlreadyRecord(participant, event);
+        boolean alreadyReserved = reservationRepository.existsByParticipantAndEvent(participant, event);
         if (alreadyReserved) {
             throw new RuntimeException("Участник уже зарегистрирован на это мероприятие");
         }
