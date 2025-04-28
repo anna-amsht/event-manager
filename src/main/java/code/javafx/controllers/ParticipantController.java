@@ -1,4 +1,4 @@
-package code.javaf.controllers;
+package code.javafx.controllers;
 
 public class ParticipantController {
 }

@@ -1,4 +1,0 @@
-package code.javaf.controllers;
-
-public class LoginController {
-}
