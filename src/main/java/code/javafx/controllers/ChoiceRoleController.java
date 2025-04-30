@@ -1,21 +1,28 @@
 package code.javafx.controllers;
 
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 
-public class ChoiceRoleController extends Application {
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.input.MouseEvent;
+
+
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class ChoiceRoleController implements Initializable {
+
+
     @Override
-    public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/choice_page/choice.fxml"));
-        primaryStage.setTitle("app");
-        primaryStage.setScene(new Scene(root));
-        primaryStage.show();
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        // TODO
+    }
 
+    @FXML
+    public void login(javafx.scene.input.MouseEvent mouseEvent) {
     }
-    public static void main(String[] args) {
-        launch(args);
+    @FXML
+    public void exit(MouseEvent mouseEvent) {
+        System.exit(0);
     }
+
 }

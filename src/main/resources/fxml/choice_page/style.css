@@ -1,0 +1,24 @@
+
+/*.controls button:active {*/
+/*    background-color:#da61d3;*/
+/*    transform: translateY(10px);*/
+/*}*/
+#organizerButton, #participantButton{
+    -fx-background-color: white;
+    -fx-text-fill: #661FBC;
+    -fx-border-style: solid;
+    -fx-border-color: #661FBC;
+    -fx-border-width: 3px;
+    -fx-border-radius: 10px;
+}
+#organizerButton:hover, #participantButton:hover{
+    -fx-background-color: #661FBC;
+    -fx-text-fill: white;
+}
+#closeButton{
+    -fx-fill: #661FBC;
+}
+#closeButton:hover{
+    -fx-fill: red;
+}
+

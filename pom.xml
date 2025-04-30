@@ -43,9 +43,21 @@
 		</dependency>
 
 		<dependency>
-			<groupId>de.jensd</groupId>
-			<artifactId>fontawesomefx</artifactId>
-			<version>8.9</version>
+			<groupId>org.kordamp.ikonli</groupId>
+			<artifactId>ikonli-core</artifactId>
+			<version>12.3.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.kordamp.ikonli</groupId>
+			<artifactId>ikonli-javafx</artifactId>
+			<version>12.3.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.kordamp.ikonli</groupId>
+			<artifactId>ikonli-fontawesome-pack</artifactId>
+			<version>12.3.1</version>
 		</dependency>
 
 		<dependency>
