@@ -1,8 +1,4 @@
 
-/*.controls button:active {*/
-/*    background-color:#da61d3;*/
-/*    transform: translateY(10px);*/
-/*}*/
 #organizerButton, #participantButton{
     -fx-background-color: white;
     -fx-text-fill: #661FBC;

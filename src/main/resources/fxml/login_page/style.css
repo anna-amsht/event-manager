@@ -1,0 +1,39 @@
+#logButton {
+    -fx-background-radius: 10px;
+    -fx-background-color: #661fbc;
+    -fx-text-fill: white;
+}
+#singUpButton {
+    -fx-background-color: white;
+    -fx-text-fill: #661fbc;
+}
+
+#singUpButton:hover{
+    -fx-font-weight: bold;
+}
+
+#logButton:hover{
+    -fx-background-color: white;
+    -fx-text-fill: #661fbc;
+    -fx-border-style: solid;
+    -fx-border-width: 2px;
+    -fx-border-radius: 10px;
+    -fx-border-color: #661fbc;
+}
+#closeButton{
+    -fx-fill: white;
+}
+
+#closeButton:hover{
+    -fx-fill: red;
+    -fx-font-size: 20px;
+}
+
+#backButton{
+    -fx-fill: white;
+}
+
+#backButton:hover{
+    -fx-font-size: 22px;
+
+}
