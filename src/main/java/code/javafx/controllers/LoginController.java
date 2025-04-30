@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
@@ -23,7 +24,9 @@ public class LoginController implements Initializable {
     public void login(MouseEvent mouseEvent) {
     }
     @FXML
-    public void signUp(MouseEvent mouseEvent) {
+    public void signUp(MouseEvent mouseEvent) throws IOException {
+        Parent fxml = FXMLLoader.load(getClass().getResource("/fxml/register_page/register.fxml"));
+        ((Stage)((Node)mouseEvent.getSource()).getScene().getWindow()).getScene().setRoot(fxml);
     }
 
     public void exit(MouseEvent mouseEvent) {
