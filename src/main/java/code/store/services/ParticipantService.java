@@ -16,6 +16,7 @@ public class ParticipantService {
 
 
     public ParticipantEntity registerParticipant(ParticipantEntity participantEntity) {
+        participantEntity.setRegistered(true);
         return participantRepository.save(participantEntity);
     }
 

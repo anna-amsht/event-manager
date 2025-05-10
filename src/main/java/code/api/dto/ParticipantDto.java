@@ -1,0 +1,25 @@
+package code.api.dto;
+
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class ParticipantDto {
+
+    @NonNull
+    Long id;
+
+    @NonNull
+    String name;
+
+    @NonNull
+    String password;
+
+    boolean isRegistered;
+
+
+}

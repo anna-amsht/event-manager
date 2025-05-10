@@ -15,6 +15,7 @@ public class OrganizerService {
     private final EventService eventService;
 
     public OrganizerEntity registerOrganizer(OrganizerEntity organizerEntity) {
+        organizerEntity.setRegistered(true);
         return organizerRepository.save(organizerEntity);
     }
 

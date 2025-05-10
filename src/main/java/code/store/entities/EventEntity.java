@@ -33,6 +33,8 @@ public class EventEntity {
     LocalDateTime dateTime;
     String location;
 
+    String format;
+
     @ManyToOne
     @JoinColumn(name = "organizer_id")
     OrganizerEntity organizer;

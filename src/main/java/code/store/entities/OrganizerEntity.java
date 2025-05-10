@@ -20,6 +20,7 @@ public class OrganizerEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Long id;
 
+    boolean isRegistered = false;
 
     String username;
     String password;

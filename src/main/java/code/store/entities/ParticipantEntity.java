@@ -21,6 +21,8 @@ public class ParticipantEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Long id;
 
+    boolean isRegistered = false;
+
     String username;
     String password;
 
