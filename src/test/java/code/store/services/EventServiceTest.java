@@ -1,5 +1,6 @@
 package code.store.services;
 
+import code.api.services.EventService;
 import code.store.entities.EventEntity;
 import code.store.entities.OrganizerEntity;
 import code.store.entities.ParticipantEntity;

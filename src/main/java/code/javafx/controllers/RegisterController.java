@@ -1,5 +1,6 @@
 package code.javafx.controllers;
 
+import code.javafx.App;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;

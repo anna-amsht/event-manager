@@ -1,4 +1,4 @@
-package code.store.services;
+package code.api.services;
 
 import code.store.entities.EventEntity;
 import code.store.entities.OrganizerEntity;

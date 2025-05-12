@@ -1,5 +1,7 @@
 package code.store.services;
 
+import code.api.services.EventService;
+import code.api.services.InvitationService;
 import code.store.entities.*;
 import code.store.repositories.EventRepository;
 import code.store.repositories.InvitationRepository;

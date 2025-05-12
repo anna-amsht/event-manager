@@ -1,8 +1,7 @@
-package code.store.services;
+package code.api.services;
 
 import code.store.entities.EventEntity;
 import code.store.entities.OrganizerEntity;
-import code.store.repositories.EventRepository;
 import code.store.repositories.OrganizerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

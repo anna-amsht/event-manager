@@ -1,5 +1,6 @@
 package code.store.services;
 
+import code.api.services.ReservationService;
 import code.store.entities.EventEntity;
 import code.store.entities.ParticipantEntity;
 import code.store.entities.ReservationEntity;

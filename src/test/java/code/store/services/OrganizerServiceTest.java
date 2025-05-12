@@ -1,5 +1,7 @@
 package code.store.services;
 
+import code.api.services.EventService;
+import code.api.services.OrganizerService;
 import code.store.entities.EventEntity;
 import code.store.entities.OrganizerEntity;
 import code.store.repositories.OrganizerRepository;
@@ -9,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
