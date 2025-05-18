@@ -20,13 +20,14 @@ import java.util.List;
 public class EventEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Long id;
 
     @Column(unique = true)
     String title;
 
     String description;
-    @Min(0)
+    @Min(5) // TODO: я не ебу почему эта шняга не работает Integer/int?
     @Column(nullable = false)
     Integer numberOfSeats;
 
