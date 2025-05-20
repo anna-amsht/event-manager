@@ -3,14 +3,6 @@
     -fx-background-color: #661fbc;
     -fx-text-fill: white;
 }
-#singUpButton {
-    -fx-background-color: white;
-    -fx-text-fill: #661fbc;
-}
-
-#singUpButton:hover{
-    -fx-font-weight: bold;
-}
 
 #logButton:hover{
     -fx-background-color: white;

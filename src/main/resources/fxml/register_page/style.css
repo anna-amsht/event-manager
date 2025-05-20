@@ -12,6 +12,15 @@
     -fx-border-radius: 10px;
     -fx-border-color: #661fbc;
 }
+
+#signInButton {
+    -fx-background-color: white;
+    -fx-text-fill: #661fbc;
+}
+
+#signInButton:hover{
+    -fx-font-weight: bold;
+}
 #closeButton{
     -fx-fill: white;
 }

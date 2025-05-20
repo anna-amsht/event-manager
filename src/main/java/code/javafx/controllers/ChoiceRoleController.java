@@ -1,6 +1,7 @@
 package code.javafx.controllers;
 
 
+import code.store.utils.RoleContext;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -20,9 +21,7 @@ public class ChoiceRoleController implements Initializable {
    ;
 
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        // TODO
-    }
+    public void initialize(URL url, ResourceBundle resourceBundle) {}
 
     @FXML
     public void open_login_page(javafx.scene.input.MouseEvent mouseEvent) throws IOException {
@@ -32,6 +31,20 @@ public class ChoiceRoleController implements Initializable {
     @FXML
     public void exit(MouseEvent mouseEvent) {
         System.exit(0);
+    }
+
+    @FXML
+    public void chooseParticipant(MouseEvent event) throws IOException {
+        RoleContext.selectedRole = "participant";
+        Parent fxml = FXMLLoader.load(getClass().getResource("/fxml/register_page/register.fxml"));
+        ((Stage)((Node)event.getSource()).getScene().getWindow()).getScene().setRoot(fxml);
+    }
+
+    @FXML
+    public void chooseOrganizer(MouseEvent event) throws IOException {
+        RoleContext.selectedRole = "organizer";
+        Parent fxml = FXMLLoader.load(getClass().getResource("/fxml/register_page/register.fxml"));
+        ((Stage)((Node)event.getSource()).getScene().getWindow()).getScene().setRoot(fxml);
     }
 
 }

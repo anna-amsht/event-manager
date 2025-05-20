@@ -34,7 +34,7 @@
                   <Font name="System Bold" size="29.0" />
                </font>
             </Text>
-            <Button fx:id="organizerButton" layoutX="59.0" layoutY="227.0" mnemonicParsing="false" onMouseClicked="#open_login_page" prefHeight="65.0" prefWidth="182.0" style="-fx-background-radius: 10px;" stylesheets="@style.css" text="Организатор" textFill="#661fbc">
+            <Button fx:id="organizerButton" layoutX="59.0" layoutY="227.0" mnemonicParsing="false" onMouseClicked="#chooseOrganizer" prefHeight="65.0" prefWidth="182.0" style="-fx-background-radius: 10px;" stylesheets="@style.css" text="Организатор" textFill="#661fbc">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
@@ -42,7 +42,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Button fx:id="participantButton" layoutX="59.0" layoutY="338.0" mnemonicParsing="false" onMouseClicked="#open_login_page" prefHeight="65.0" prefWidth="182.0" style="-fx-background-radius: 10px;" text="Участник" textFill="#661fbc">
+            <Button fx:id="participantButton" layoutX="59.0" layoutY="338.0" mnemonicParsing="false" onMouseClicked="#chooseParticipant" prefHeight="65.0" prefWidth="182.0" style="-fx-background-radius: 10px;" text="Участник" textFill="#661fbc">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
