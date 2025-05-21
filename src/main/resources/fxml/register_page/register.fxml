@@ -58,7 +58,7 @@
                </font>
             </PasswordField>
             <FontIcon fill="#661fbc" iconLiteral="fas-key" iconSize="20" layoutX="51.0" layoutY="322.0" text="" />
-            <Button fx:id="signInButton" layoutX="199.0" layoutY="418.0"  onMouseClicked="#signIn" mnemonicParsing="false" stylesheets="@style.css" text="Sing In">
+            <Button fx:id="signInButton" layoutX="199.0" layoutY="418.0" mnemonicParsing="false" onMouseClicked="#signIn" stylesheets="@style.css" text="Sing In">
                <font>
                   <Font size="16.0" />
                </font>
@@ -70,6 +70,7 @@
                   <Font size="16.0" />
                </font>
             </Label>
+                <Label fx:id="errorLabel" alignment="CENTER" layoutY="469.0" prefHeight="17.0" prefWidth="302.0" textAlignment="CENTER" textFill="red" />
             </children>
         </AnchorPane>
     </center>
@@ -97,4 +98,5 @@
                 </FontIcon>
             </children></AnchorPane>
     </left>
+
 </BorderPane>

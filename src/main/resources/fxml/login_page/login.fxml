@@ -33,7 +33,7 @@
                <font>
                   <Font size="14.0" />
                </font></PasswordField>
-            <Text fill="#661fbc" layoutX="101.0" layoutY="138.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User Login">
+            <Text fill="#661fbc" layoutX="96.0" layoutY="137.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User Sign In">
                <font>
                   <Font name="Century Gothic Bold" size="18.0" />
                </font>
