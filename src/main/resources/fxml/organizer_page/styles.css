@@ -9,6 +9,22 @@
     -fx-font-size: 21,5px;
     -fx-font-weight: bold;
 }
+.createButton{
+    -fx-background-color: #661fbc;
+    -fx-text-fill: white;
+    -fx-font-style: "Century Gothic";
+    -fx-font-size: 20px;
+}
+
+.createButton:hover{
+    -fx-border-color: #661fbc;
+    -fx-border-style: solid;
+    -fx-border-width: 2px;
+    -fx-background-color: white;
+    -fx-text-fill: #661fbc;
+    -fx-font-style: "Century Gothic";
+    -fx-font-size: 20px;
+}
 #userModeButton:hover, #exitFromProfileButton:hover{
     -fx-text-fill: #661fbc;
 }

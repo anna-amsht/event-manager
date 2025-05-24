@@ -27,11 +27,11 @@ public class EventEntity {
     String title;
 
     String description;
-    @Min(5) // TODO: я не ебу почему эта шняга не работает Integer/int?
+    @Min(5)
     @Column(nullable = false)
     Integer numberOfSeats;
 
-    LocalDateTime dateTime;
+    String dateTime;
     String location;
 
     String format;

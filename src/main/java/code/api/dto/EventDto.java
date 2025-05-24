@@ -1,6 +1,7 @@
 package code.api.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Min;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -26,8 +27,9 @@ public class EventDto {
     @Min(0)
     Integer numberOfSeats;
 
+
     @JsonProperty("date_time")
-    LocalDateTime dateTime;
+    String dateTime;
     String format;
     String location;
 

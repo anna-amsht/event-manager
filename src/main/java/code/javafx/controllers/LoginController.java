@@ -2,6 +2,8 @@ package code.javafx.controllers;
 
 import code.api.dto.OrganizerDto;
 import code.javafx.App;
+import code.javafx.models.SessionContext;
+import code.store.entities.OrganizerEntity;
 import code.store.utils.RoleContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.fxml.FXML;
@@ -15,9 +17,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import org.json.JSONObject;
 
-import java.awt.event.ActionEvent;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -29,6 +29,9 @@ public class LoginController implements Initializable {
     @FXML private TextField userName;
     @FXML private PasswordField password;
     @FXML private Label errorLabel;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {}
@@ -57,48 +60,62 @@ public class LoginController implements Initializable {
         }
 
         try {
+            // 1. Формируем и отправляем запрос
             URL url = new URL(urlStr);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("POST");
             con.setRequestProperty("Content-Type", "application/json; utf-8");
             con.setDoOutput(true);
 
-
             String jsonInput = String.format("{\"username\":\"%s\", \"password\":\"%s\"}", username, pass);
 
-
             try (OutputStream os = con.getOutputStream()) {
-                byte[] input = jsonInput.getBytes("utf-8");
-                os.write(input, 0, input.length);
+                os.write(jsonInput.getBytes("utf-8"));
             }
 
-            int responseCode = con.getResponseCode();
-
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-
+            // 2. Обрабатываем ответ
+            if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 try (BufferedReader br = new BufferedReader(
                         new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
 
-                    errorLabel.setText("Вход успешно выполнен");
+                    String response = br.lines().collect(Collectors.joining());
+                    System.out.println("Response from server: " + response); // Логируем ответ
 
+                    if ("organizer".equals(role)) {
+                        OrganizerDto organizerDto = objectMapper.readValue(response, OrganizerDto.class);
+                        if (organizerDto == null || organizerDto.getId() == null) {
+                            errorLabel.setText("Неверные данные пользователя");
+                            return;
+                        }
 
-                    Parent root = FXMLLoader.load(getClass().getResource("/fxml/organizer_page/orgPage.fxml"));
-                    ((Stage)((Node) mouseEvent.getSource()).getScene().getWindow()).getScene().setRoot(root);
-                }
-            } else {
-                    if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                        errorLabel.setText("Неверный логин или пароль");
+                        OrganizerEntity organizer = new OrganizerEntity();
+                        organizer.setId(organizerDto.getId());
+                        organizer.setUsername(organizerDto.getUsername());
+                        // Пароль не устанавливаем, так как он не нужен в клиенте
+
+                        SessionContext.setCurrentOrganizer(organizer);
+
+                        // Переход на страницу организатора
+                        Parent root = FXMLLoader.load(getClass().getResource("/fxml/organizer_page/orgPage.fxml"));
+                        ((Stage)((Node) mouseEvent.getSource()).getScene().getWindow()).setScene(new Scene(root));
                     } else {
-                        errorLabel.setText("Ошибка");
+                        // Для участника (аналогично, но с Participant)
+                        // SessionContext.setCurrentParticipant(...);
                     }
 
+                    errorLabel.setText("Вход выполнен успешно");
+                }
+            } else {
+                errorLabel.setText(con.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED
+                        ? "Неверный логин или пароль"
+                        : "Ошибка сервера");
             }
-
         } catch (IOException e) {
+            errorLabel.setText("Ошибка подключения: " + e.getMessage());
             e.printStackTrace();
-            errorLabel.setText("Ошибка подключения к серверу");
         }
     }
+
 
     public void exit(MouseEvent mouseEvent) {
         System.exit(0);

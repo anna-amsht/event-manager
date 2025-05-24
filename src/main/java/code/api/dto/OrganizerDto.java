@@ -13,7 +13,7 @@ import lombok.experimental.FieldDefaults;
 public class OrganizerDto {
     @NonNull
     Long id;
-    @NonNull
+
     String password;
 
     @NonNull

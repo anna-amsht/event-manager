@@ -25,7 +25,7 @@
          <left>
             <VBox prefHeight="596.0" prefWidth="216.0" style="-fx-background-color: #9281D3;" BorderPane.alignment="CENTER">
                <children>
-                  <Button fx:id="createButton" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#createEvent" prefHeight="60.0" prefWidth="216.0" stylesheets="@styles.css" text="СОЗДАТЬ" textFill="WHITE">
+                  <Button fx:id="createButton" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#gotocreateEvent" prefHeight="60.0" prefWidth="216.0" stylesheets="@styles.css" text="СОЗДАТЬ" textFill="WHITE">
                      <VBox.margin>
                         <Insets bottom="20.0" top="40.0" />
                      </VBox.margin>
