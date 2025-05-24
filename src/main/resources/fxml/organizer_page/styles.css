@@ -1,0 +1,37 @@
+.button{
+    -fx-font-style: "Century Gothic";
+    -fx-background-color: transparent;
+    -fx-font-size: 20px;
+    -fx-text-fill: white;
+}
+.button:hover{
+
+    -fx-font-size: 21,5px;
+    -fx-font-weight: bold;
+}
+#userModeButton:hover, #exitFromProfileButton:hover{
+    -fx-text-fill: #661fbc;
+}
+
+.column-header{
+    -fx-cell-size: 18;
+    -fx-background-color: white;
+}
+
+.table-view .column-header .label{
+    -fx-text-fill: #661fbc;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER;
+}
+.table-row-cell:selected{
+    -fx-background-color:  #9281D3;
+}
+
+#exitButton{
+    -fx-fill: white;
+}
+
+#exitButton:hover{
+    -fx-fill: red;
+    -fx-font-size: 20px;
+}

@@ -13,7 +13,7 @@ public class ParticipantDtoFactory {
 
         return ParticipantDto.builder()
                 .id(entity.getId())
-                .name(entity.getUsername())
+                .username(entity.getUsername())
                 .password(entity.getPassword())
                 .isRegistered(entity.isRegistered())
                 .build();

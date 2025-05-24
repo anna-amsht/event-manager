@@ -1,6 +1,7 @@
 package code.api.services;
 
 import code.api.exceptions.BadRequestException;
+import code.api.exceptions.NotFoundException;
 import code.store.entities.EventEntity;
 import code.store.entities.OrganizerEntity;
 import code.store.repositories.OrganizerRepository;
@@ -26,7 +27,7 @@ public class OrganizerService {
 
     public EventEntity createEvent(Long organizerId, EventEntity eventEntity) {
         OrganizerEntity organizer = organizerRepository.findById(organizerId)
-                .orElseThrow(() -> new BadRequestException("Организатор не найден"));
+                .orElseThrow(() -> new NotFoundException("Организатор не найден"));
 
         eventEntity.setOrganizer(organizer);
         return eventService.createEvent(eventEntity);
@@ -35,7 +36,7 @@ public class OrganizerService {
     public EventEntity updateEvent(Long organizerId, EventEntity updatedEvent) {
 
         OrganizerEntity organizer = organizerRepository.findById(organizerId)
-                .orElseThrow(() -> new BadRequestException("Организатор не найден"));
+                .orElseThrow(() -> new NotFoundException("Организатор не найден"));
 
 
         EventEntity existingEvent = eventService.getEventById(updatedEvent.getId());
@@ -55,7 +56,7 @@ public class OrganizerService {
 
     public void deleteEvent(Long organizerId, Long eventId) {
         OrganizerEntity organizer = organizerRepository.findById(organizerId)
-                .orElseThrow(() -> new BadRequestException("Организатор не найден"));
+                .orElseThrow(() -> new NotFoundException("Организатор не найден"));
 
         EventEntity event = eventService.getEventById(eventId);
 

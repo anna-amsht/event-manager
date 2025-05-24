@@ -4,6 +4,8 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 @Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -11,12 +13,11 @@ import lombok.experimental.FieldDefaults;
 public class OrganizerDto {
     @NonNull
     Long id;
-
-    @NonNull
-    String name;
-
     @NonNull
     String password;
+
+    @NonNull
+    String username;
 
     boolean isRegistered;
 

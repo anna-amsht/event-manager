@@ -13,8 +13,7 @@ public class OrganizerDtoFactory {
 
         return OrganizerDto.builder()
                 .id(entity.getId())
-                .name(entity.getUsername())
-                .password(entity.getPassword())
+                .username(entity.getUsername())
                 .isRegistered(entity.isRegistered())
                 .build();
 

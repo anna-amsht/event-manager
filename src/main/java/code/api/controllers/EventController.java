@@ -59,6 +59,16 @@ public class EventController {
         }
         return eventDtos;
     }
+//    @GetMapping
+//    public List<EventDto> getEventsByOrganizer(@RequestParam Long organizerId) {
+//        List<EventDto> eventDtos = new ArrayList<>();
+//        List<EventEntity> events = eventService.getEventsByOrganizerId(organizerId);
+//        for (EventEntity event : events) {
+//            eventDtos.add(eventDtoFactory.makeEventDto(event));
+//        }
+//        return eventDtos;
+//    }
+
 
     @DeleteMapping("/{id}")
     public void deleteEvent(@PathVariable Long id) {

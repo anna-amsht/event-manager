@@ -39,6 +39,11 @@ public class EventService {
                 .orElseThrow(() -> new RuntimeException("Мероприятие не найдено"));
     }
 
+    public List<EventEntity> getEventsByOrganizerId(Long organizerId) {
+        return eventRepository.findAllByOrganizerId(organizerId);
+    }
+
+
     public void deleteEvent(Long eventId) {
         if (!eventRepository.existsById(eventId)) {
             throw new RuntimeException("Мероприятие уже удалено");

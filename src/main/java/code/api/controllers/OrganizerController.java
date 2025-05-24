@@ -1,6 +1,8 @@
 package code.api.controllers;
 
+import code.api.dto.OrganizerDto;
 import code.api.exceptions.BadRequestException;
+import code.api.exceptions.NotFoundException;
 import code.api.services.OrganizerService;
 import code.store.entities.OrganizerEntity;
 import code.store.repositories.OrganizerRepository;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrganizerController {
 
     OrganizerService organizerService;
+    OrganizerRepository organizerRepository;
 
     @PostMapping
     public ResponseEntity<String> createOrganizer(@RequestBody OrganizerEntity entity) {
@@ -35,4 +38,23 @@ public class OrganizerController {
                     .body(e.getMessage());
         }
     }
+
+    @PostMapping("/login")
+    public OrganizerDto login(@RequestBody OrganizerDto dto) {
+        OrganizerEntity organizer = organizerRepository
+                .findByUsername(dto.getUsername())
+                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+
+        if (!organizer.getPassword().equals(dto.getPassword())) {
+            throw new BadRequestException("Неверный пароль");
+        }
+
+        OrganizerDto responseDto = new OrganizerDto();
+        responseDto.setId(organizer.getId());
+        responseDto.setUsername(organizer.getUsername());
+        responseDto.setRegistered(organizer.isRegistered());
+
+        return responseDto;
+    }
+
 }

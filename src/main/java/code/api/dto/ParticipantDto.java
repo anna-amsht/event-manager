@@ -14,7 +14,7 @@ public class ParticipantDto {
     Long id;
 
     @NonNull
-    String name;
+    String username;
 
     @NonNull
     String password;
