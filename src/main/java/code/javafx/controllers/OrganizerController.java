@@ -5,6 +5,7 @@ import code.javafx.models.EventModel;
 import code.javafx.models.SessionContext;
 import code.store.entities.OrganizerEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -14,8 +15,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -28,6 +28,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -55,6 +56,27 @@ public class OrganizerController implements Initializable {
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("dateTime"));
         placeColumn.setCellValueFactory(new PropertyValueFactory<>("place"));
         formatColumn.setCellValueFactory(new PropertyValueFactory<>("format"));
+        TableColumn<EventModel, Void> actionColumn = (TableColumn<EventModel, Void>) eventTableView.getColumns().get(5);
+
+        actionColumn.setCellFactory(param -> new TableCell<>() {
+            private final Button deleteButton = new Button("Удалить");
+
+            {
+                deleteButton.setStyle("-fx-background-color: #661fbc; -fx-text-fill: white; -fx-cursor: hand; -fx-max-width: 100px; -fx-max-height: 5px; -fx-font-size: 14px");
+
+
+                deleteButton.setOnAction(event -> {
+                    EventModel eventModel = getTableView().getItems().get(getIndex());
+                    showDeleteConfirmation(eventModel);
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : deleteButton);
+            }
+        });
 
         OrganizerEntity currentOrganizer = SessionContext.getCurrentOrganizer();
         if (currentOrganizer != null) {
@@ -65,6 +87,48 @@ public class OrganizerController implements Initializable {
         }
     }
 
+
+    private void showDeleteConfirmation(EventModel eventModel) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Подтверждение удаления");
+        alert.setHeaderText("Удаление мероприятия \"" + eventModel.getTitle() + "\"");
+        alert.setContentText("Вы уверены? Это действие нельзя отменить.");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            deleteEventFromServer(eventModel.getId());
+        }
+    }
+    private void deleteEventFromServer(Long eventId) {
+        try {
+            String deleteUrl = baseUrl + "/" + eventId;
+            HttpURLConnection con = (HttpURLConnection) new URL(deleteUrl).openConnection();
+            con.setRequestMethod("DELETE");
+
+            if (con.getResponseCode() == 200) {
+                Platform.runLater(() -> {
+                    showAlert(Alert.AlertType.INFORMATION, "Успех", "Мероприятие удалено");
+                    loadEvents();
+                });
+            } else {
+                Platform.runLater(() ->
+                        showAlert(Alert.AlertType.ERROR, "Ошибка", "Не удалось удалить мероприятие")
+                );
+            }
+        } catch (IOException e) {
+            Platform.runLater(() ->
+                    showAlert(Alert.AlertType.ERROR, "Ошибка", e.getMessage())
+            );
+        }
+    }
+
+    private void showAlert(Alert.AlertType type, String title, String message) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 
 
     private void loadEvents() {
@@ -94,6 +158,7 @@ public class OrganizerController implements Initializable {
                             " | Organizer: " + dto.getOrganizerId());
                     String format = parseFormat(dto.getFormat()); // Нормализация формата
                     events.add(new EventModel(
+                            dto.getId(),
                             dto.getTitle(),
                             dto.getNumberOfSeats(),
                             dto.getDateTime(),
@@ -118,7 +183,7 @@ public class OrganizerController implements Initializable {
         String normalized = rawFormat.trim().toLowerCase();
         return normalized.contains("online") ? "онлайн"
                 : normalized.contains("offline") ? "офлайн"
-                : rawFormat; // или "неизвестно", если хотите заменять другие значения
+                : rawFormat;
     }
 
     public void inviteUser(ActionEvent actionEvent) {

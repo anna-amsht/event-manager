@@ -92,7 +92,7 @@ public class LoginController implements Initializable {
                         organizer.setId(organizerDto.getId());
                         organizer.setUsername(organizerDto.getUsername());
 
-                        SessionContext.setCurrentOrganizer(organizer); // сохраняем в сессию
+                        SessionContext.setCurrentOrganizer(organizer);
 
 
                         Parent root = FXMLLoader.load(getClass().getResource("/fxml/organizer_page/orgPage.fxml"));

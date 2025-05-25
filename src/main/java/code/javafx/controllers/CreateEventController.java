@@ -45,7 +45,7 @@ public class CreateEventController implements Initializable {
     }
     @FXML
     public void createEvent(ActionEvent actionEvent) {
-        // Считываем данные из формы
+
         String title = titleField.getText().trim();
         String description = descriptionArea.getText().trim();
         String place = placeField.getText().trim();
@@ -53,20 +53,19 @@ public class CreateEventController implements Initializable {
         String seatsStr = seatsField.getText().trim();
         String format = formatField.getText().trim();
 
-        // Проверка на заполненность
         if (title.isEmpty() || description.isEmpty() || place.isEmpty() ||
                 dateTimeStr.isEmpty() || seatsStr.isEmpty() || format.isEmpty()) {
             errorLabel.setText("Заполните все обязательные поля!");
             return;
         }
 
-        // Проверка формата события
+
         if (!format.equalsIgnoreCase("онлайн") && !format.equalsIgnoreCase("офлайн")) {
             errorLabel.setText("Формат должен быть 'Онлайн' или 'Офлайн'");
             return;
         }
 
-        // Проверка количества мест
+
         int seats;
         try {
             seats = Integer.parseInt(seatsStr);
@@ -79,14 +78,13 @@ public class CreateEventController implements Initializable {
             return;
         }
 
-        // Получаем текущего организатора из сессии
         OrganizerEntity currentOrganizer = SessionContext.getCurrentOrganizer();
         if (currentOrganizer == null) {
             errorLabel.setText("Организатор не найден в сессии!");
             return;
         }
 
-        // Создаем DTO события для отправки на сервер
+
         EventDto eventDto = new EventDto();
         eventDto.setTitle(title);
         eventDto.setDescription(description);
@@ -97,14 +95,13 @@ public class CreateEventController implements Initializable {
         eventDto.setOrganizerId(currentOrganizer.getId());
 
         try {
-            // Отправляем POST-запрос на сервер
+
             URL url = new URL("http://localhost:8080/api/events");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("POST");
             con.setRequestProperty("Content-Type", "application/json; utf-8");
             con.setDoOutput(true);
 
-            // Преобразуем DTO в JSON (используй Jackson)
             ObjectMapper mapper = new ObjectMapper();
             String jsonInput = mapper.writeValueAsString(eventDto);
 
@@ -116,9 +113,9 @@ public class CreateEventController implements Initializable {
             int responseCode = con.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED) {
                 errorLabel.setText("Мероприятие успешно создано");
-                // Можно очистить форму, если нужно
+
             } else {
-                // Читаем сообщение об ошибке с сервера
+
                 try (BufferedReader br = new BufferedReader(
                         new InputStreamReader(con.getErrorStream(), StandardCharsets.UTF_8))) {
                     String errorResponse = br.lines().collect(Collectors.joining());

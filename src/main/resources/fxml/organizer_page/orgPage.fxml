@@ -16,6 +16,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="code.javafx.controllers.OrganizerController">
    <stylesheets>
       <URL value="@styles.css" />
@@ -134,7 +135,11 @@
                                           <TableColumn fx:id="dateColumn" minWidth="0.0" prefWidth="75.0" text="Дата" />
                                           <TableColumn fx:id="placeColumn" prefWidth="79.0" text="Место" />
                                           <TableColumn fx:id="formatColumn" prefWidth="86.0" text="Формат" />
-                                          <TableColumn prefWidth="121.0" />
+                                          <TableColumn prefWidth="121.0">
+                                         <cellValueFactory>
+                                         <PropertyValueFactory property="dummy" />
+                                      </cellValueFactory>
+                                          </TableColumn>
                                       </columns>
                                     </TableView>
                                  </center>

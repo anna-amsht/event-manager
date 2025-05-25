@@ -68,7 +68,7 @@ public class RegisterController implements Initializable {
             int responseCode = con.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED) {
                 errorLabel.setText("Регистрация прошла успешно.");
-                Parent root = FXMLLoader.load(getClass().getResource("/fxml/organizer_page/orgPage.fxml"));
+                Parent root = FXMLLoader.load(getClass().getResource("/fxml/login_page/login.fxml"));
                 ((Stage)((Node) mouseEvent.getSource()).getScene().getWindow()).getScene().setRoot(root);
             } else {
                 InputStream stream = responseCode < 400 ? con.getInputStream() : con.getErrorStream();

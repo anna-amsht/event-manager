@@ -30,6 +30,8 @@
 }
 
 .column-header{
+    -fx-text-fill: #661fbc;
+    -fx-font-weight: bold;
     -fx-cell-size: 18;
     -fx-background-color: white;
 }

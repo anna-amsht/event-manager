@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class EventModel {
+    private Long id;
     private String title;
     private Integer numberOfSeats;
     private String dateTime;
