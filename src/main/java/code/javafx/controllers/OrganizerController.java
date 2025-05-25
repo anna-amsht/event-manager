@@ -1,6 +1,9 @@
 package code.javafx.controllers;
 
+import code.api.dto.EventDto;
 import code.javafx.models.EventModel;
+import code.javafx.models.SessionContext;
+import code.store.entities.OrganizerEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,7 +32,7 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 public class OrganizerController implements Initializable {
-    private int organizerId;
+    private Long organizerId;
     private final String baseUrl = "http://localhost:8080/api/events";
 
     @FXML
@@ -52,17 +55,24 @@ public class OrganizerController implements Initializable {
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("dateTime"));
         placeColumn.setCellValueFactory(new PropertyValueFactory<>("place"));
         formatColumn.setCellValueFactory(new PropertyValueFactory<>("format"));
+
+        OrganizerEntity currentOrganizer = SessionContext.getCurrentOrganizer();
+        if (currentOrganizer != null) {
+            this.organizerId = currentOrganizer.getId();
+            loadEvents();
+        } else {
+            System.err.println("Организатор не найден в сессии!");
+        }
     }
 
-    public void setOrganizerId(int id) {
-        this.organizerId = id;
-        loadEvents();
-    }
 
 
     private void loadEvents() {
         try {
-            URL url = new URL(baseUrl);
+            String apiUrl = baseUrl + "/by-organizer?organizerId=" + this.organizerId;
+            System.out.println("Fetching events from: " + apiUrl); //
+
+            URL url = new URL(apiUrl);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             con.setRequestProperty("Accept", "application/json");
@@ -73,16 +83,22 @@ public class OrganizerController implements Initializable {
                         .lines().collect(Collectors.joining("\n"));
 
                 ObjectMapper mapper = new ObjectMapper();
-                List<Map<String, Object>> eventList = mapper.readValue(json, List.class);
+                List<EventDto> eventDtos = mapper.readValue(
+                        json,
+                        mapper.getTypeFactory().constructCollectionType(List.class, EventDto.class)
+                );
 
                 ObservableList<EventModel> events = FXCollections.observableArrayList();
-                for (Map<String, Object> item : eventList) {
+                for (EventDto dto : eventDtos) {
+                    System.out.println("Processing event: " + dto.getTitle() +
+                            " | Organizer: " + dto.getOrganizerId());
+                    String format = parseFormat(dto.getFormat()); // Нормализация формата
                     events.add(new EventModel(
-                            (String) item.get("title"),
-                            (int) item.get("numberOfSeats"),
-                            (String) item.get("dateTime"),
-                            (String) item.get("location"),
-                            (String) item.get("format")
+                            dto.getTitle(),
+                            dto.getNumberOfSeats(),
+                            dto.getDateTime(),
+                            dto.getLocation(),
+                            format
                     ));
                 }
 
@@ -92,6 +108,17 @@ public class OrganizerController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private String parseFormat(String rawFormat) {
+        if (rawFormat == null || rawFormat.trim().isEmpty()) {
+            return "не указан";
+        }
+
+        String normalized = rawFormat.trim().toLowerCase();
+        return normalized.contains("online") ? "онлайн"
+                : normalized.contains("offline") ? "офлайн"
+                : rawFormat; // или "неизвестно", если хотите заменять другие значения
     }
 
     public void inviteUser(ActionEvent actionEvent) {
@@ -104,6 +131,7 @@ public class OrganizerController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/organizer_page/createEvent.fxml"));
             Parent root = loader.load();
+
             Scene scene = new Scene(root);
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
 

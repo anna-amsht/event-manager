@@ -127,7 +127,7 @@
                                     <HBox prefHeight="36.0" prefWidth="589.0" stylesheets="@styles.css" BorderPane.alignment="CENTER" />
                                  </top>
                                  <center>
-                                    <TableView prefHeight="200.0" prefWidth="200.0" stylesheets="@styles.css" BorderPane.alignment="CENTER">
+                                    <TableView fx:id="eventTableView" prefHeight="200.0" prefWidth="200.0" stylesheets="@styles.css" BorderPane.alignment="CENTER">
                                       <columns>
                                         <TableColumn fx:id="titleColumn" prefWidth="148.0" styleClass="column-header" text="Название" />
                                         <TableColumn fx:id="seatsColumn" prefWidth="77.0" text="Кол-во мест" />

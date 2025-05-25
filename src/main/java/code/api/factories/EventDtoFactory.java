@@ -16,6 +16,7 @@ public class EventDtoFactory {
                 .location(entity.getLocation())
                 .dateTime(entity.getDateTime())
                 .numberOfSeats(entity.getNumberOfSeats())
+                .format(entity.getFormat())
                 .organizerId(entity.getOrganizer() != null ? entity.getOrganizer().getId() : null)
                 .build();
 

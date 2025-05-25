@@ -30,6 +30,7 @@ public class EventDto {
 
     @JsonProperty("date_time")
     String dateTime;
+    @JsonProperty("format")
     String format;
     String location;
 

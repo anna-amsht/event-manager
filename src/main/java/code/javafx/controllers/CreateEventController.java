@@ -1,8 +1,6 @@
 package code.javafx.controllers;
 
 import code.api.dto.EventDto;
-import code.api.dto.OrganizerDto;
-import code.javafx.App;
 import code.javafx.models.SessionContext;
 import code.store.entities.OrganizerEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,9 +23,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -41,96 +36,100 @@ public class CreateEventController implements Initializable {
     @FXML private Label errorLabel;
 
     private Long organizerId;
+    EventDto eventDto;
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
     }
-
+    @FXML
     public void createEvent(ActionEvent actionEvent) {
+        // Считываем данные из формы
+        String title = titleField.getText().trim();
+        String description = descriptionArea.getText().trim();
+        String place = placeField.getText().trim();
+        String dateTimeStr = dateField.getText().trim();
+        String seatsStr = seatsField.getText().trim();
+        String format = formatField.getText().trim();
+
+        // Проверка на заполненность
+        if (title.isEmpty() || description.isEmpty() || place.isEmpty() ||
+                dateTimeStr.isEmpty() || seatsStr.isEmpty() || format.isEmpty()) {
+            errorLabel.setText("Заполните все обязательные поля!");
+            return;
+        }
+
+        // Проверка формата события
+        if (!format.equalsIgnoreCase("онлайн") && !format.equalsIgnoreCase("офлайн")) {
+            errorLabel.setText("Формат должен быть 'Онлайн' или 'Офлайн'");
+            return;
+        }
+
+        // Проверка количества мест
+        int seats;
+        try {
+            seats = Integer.parseInt(seatsStr);
+            if (seats <= 0) {
+                errorLabel.setText("Количество мест должно быть положительным числом");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            errorLabel.setText("Количество мест должно быть числом!");
+            return;
+        }
+
+        // Получаем текущего организатора из сессии
+        OrganizerEntity currentOrganizer = SessionContext.getCurrentOrganizer();
+        if (currentOrganizer == null) {
+            errorLabel.setText("Организатор не найден в сессии!");
+            return;
+        }
+
+        // Создаем DTO события для отправки на сервер
+        EventDto eventDto = new EventDto();
+        eventDto.setTitle(title);
+        eventDto.setDescription(description);
+        eventDto.setLocation(place);
+        eventDto.setDateTime(dateTimeStr);
+        eventDto.setNumberOfSeats(seats);
+        eventDto.setFormat(format.equalsIgnoreCase("онлайн") ? "ONLINE" : "OFFLINE");
+        eventDto.setOrganizerId(currentOrganizer.getId());
 
         try {
-
-            // Получаем данные из формы
-            String title = titleField.getText();
-            String description = descriptionArea.getText();
-            String place = placeField.getText();
-            String dateTimeStr = dateField.getText();
-            String seatsStr = seatsField.getText();
-            String format = formatField.getText().trim();
-
-            // Проверка заполненности полей
-            if (title.isEmpty() || description.isEmpty() || place.isEmpty() ||
-                    dateTimeStr.isEmpty() || seatsStr.isEmpty() || format.isEmpty()) {
-                errorLabel.setText("Заполните все обязательные поля!");
-                return;
-            }
-
-            // Проверка формата мероприятия
-            if (!format.equalsIgnoreCase("онлайн") && !format.equalsIgnoreCase("офлайн")) {
-                errorLabel.setText("Формат должен быть 'Онлайн' или 'Офлайн'");
-                return;
-            }
-
-            // Проверка количества мест
-            int seats;
-            try {
-                seats = Integer.parseInt(seatsStr);
-                if (seats <= 0) {
-                    errorLabel.setText("Количество мест должно быть положительным числом");
-                    return;
-                }
-            } catch (NumberFormatException e) {
-                errorLabel.setText("Количество мест должно быть числом!");
-                return;
-            }
-
-            OrganizerEntity currentOrganizer = SessionContext.getCurrentOrganizer();
-            if (currentOrganizer == null) {
-                errorLabel.setText("Ошибка: организатор не авторизован");
-                return;
-            }
-
-            // Создаем DTO для отправки
-            EventDto eventDto = new EventDto();
-            eventDto.setTitle(title);
-            eventDto.setDescription(description);
-            eventDto.setLocation(place);
-            eventDto.setDateTime(dateTimeStr);
-            eventDto.setNumberOfSeats(seats);
-            eventDto.setFormat(format.equalsIgnoreCase("онлайн") ? "ONLINE" : "OFFLINE");
-            eventDto.setOrganizerId(currentOrganizer.getId());
-
-            // Отправляем запрос на сервер
+            // Отправляем POST-запрос на сервер
             URL url = new URL("http://localhost:8080/api/events");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("POST");
             con.setRequestProperty("Content-Type", "application/json; utf-8");
             con.setDoOutput(true);
 
+            // Преобразуем DTO в JSON (используй Jackson)
             ObjectMapper mapper = new ObjectMapper();
             String jsonInput = mapper.writeValueAsString(eventDto);
 
             try (OutputStream os = con.getOutputStream()) {
-                byte[] input = jsonInput.getBytes("utf-8");
+                byte[] input = jsonInput.getBytes(StandardCharsets.UTF_8);
                 os.write(input, 0, input.length);
             }
 
             int responseCode = con.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED) {
                 errorLabel.setText("Мероприятие успешно создано");
+                // Можно очистить форму, если нужно
             } else {
+                // Читаем сообщение об ошибке с сервера
                 try (BufferedReader br = new BufferedReader(
                         new InputStreamReader(con.getErrorStream(), StandardCharsets.UTF_8))) {
                     String errorResponse = br.lines().collect(Collectors.joining());
                     errorLabel.setText("Ошибка: " + errorResponse);
                 }
             }
+
         } catch (IOException e) {
             errorLabel.setText("Ошибка подключения к серверу");
             e.printStackTrace();
         }
-
     }
 
     public void gotoedit(ActionEvent actionEvent) {

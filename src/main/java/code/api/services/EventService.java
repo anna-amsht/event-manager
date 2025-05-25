@@ -1,5 +1,6 @@
 package code.api.services;
 
+import code.api.controllers.EventController;
 import code.store.entities.EventEntity;
 import code.store.entities.OrganizerEntity;
 import code.store.entities.ParticipantEntity;
@@ -8,6 +9,8 @@ import code.store.repositories.EventRepository;
 import code.store.repositories.OrganizerRepository;
 import code.store.repositories.ParticipantRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +22,7 @@ public class EventService {
     private final EventRepository eventRepository;
     private final OrganizerRepository organizerRepository;
     private final ParticipantRepository participantRepository;
+    private static final Logger log = LoggerFactory.getLogger(EventController.class);
 
     public EventEntity createEvent(EventEntity eventEntity) {
 
@@ -40,7 +44,11 @@ public class EventService {
     }
 
     public List<EventEntity> getEventsByOrganizerId(Long organizerId) {
-        return eventRepository.findAllByOrganizerId(organizerId);
+        log.debug("Поиск мероприятий для организатора ID: {}", organizerId);
+        List<EventEntity> events = eventRepository.findAllByOrganizerId(organizerId);
+        log.info("Найдено {} мероприятий для организатора {}", events.size(), organizerId);
+        return events;
+
     }
 
 

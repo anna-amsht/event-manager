@@ -4,7 +4,7 @@ import code.api.dto.OrganizerDto;
 import code.javafx.App;
 import code.javafx.models.SessionContext;
 import code.store.entities.OrganizerEntity;
-import code.store.utils.RoleContext;
+import code.javafx.models.RoleContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -91,19 +91,20 @@ public class LoginController implements Initializable {
                         OrganizerEntity organizer = new OrganizerEntity();
                         organizer.setId(organizerDto.getId());
                         organizer.setUsername(organizerDto.getUsername());
-                        // Пароль не устанавливаем, так как он не нужен в клиенте
 
-                        SessionContext.setCurrentOrganizer(organizer);
+                        SessionContext.setCurrentOrganizer(organizer); // сохраняем в сессию
 
-                        // Переход на страницу организатора
+
                         Parent root = FXMLLoader.load(getClass().getResource("/fxml/organizer_page/orgPage.fxml"));
-                        ((Stage)((Node) mouseEvent.getSource()).getScene().getWindow()).setScene(new Scene(root));
-                    } else {
-                        // Для участника (аналогично, но с Participant)
-                        // SessionContext.setCurrentParticipant(...);
+
+                        Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+                        stage.setScene(new Scene(root));
+                        stage.show();
                     }
 
+
                     errorLabel.setText("Вход выполнен успешно");
+
                 }
             } else {
                 errorLabel.setText(con.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED
