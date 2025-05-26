@@ -48,6 +48,19 @@
 .details-button:hover{
     -fx-font-size: 14px
 }
+#registerButton {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 5 15 5 15;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+#registerButton:hover {
+    -fx-background-color: #3e8e41;
+}
+
 
 
 

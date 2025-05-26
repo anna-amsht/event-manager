@@ -5,8 +5,11 @@ import code.api.services.EventService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -14,6 +17,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -55,13 +59,12 @@ public class ParticipantEventsController implements Initializable {
 
     private VBox createEventBox(EventDto event) {
         VBox vbox = new VBox(5);
-        vbox.getStyleClass().add("event-box"); // Добавляем CSS класс
+        vbox.getStyleClass().add("event-box");
 
-        // Название мероприятия
+
         Label titleLabel = new Label(event.getTitle());
         titleLabel.getStyleClass().add("event-title");
 
-        // Кнопка "подробнее"
         Button detailsButton = new Button("подробнее");
         detailsButton.getStyleClass().add("details-button");
         detailsButton.setOnAction(e -> showEventDetails(event));
@@ -83,8 +86,22 @@ public class ParticipantEventsController implements Initializable {
     }
 
     private void showEventDetails(EventDto event) {
-        // Реализация перехода на страницу с деталями
-        System.out.println("Показать детали: " + event.getTitle());
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/participant_page/visit_event.fxml"));
+                Parent root = loader.load();
+
+                VisitEventController controller = loader.getController();
+                controller.setEvent(event);
+
+                Stage stage = new Stage();
+                stage.setTitle("Детали мероприятия");
+                stage.setScene(new Scene(root, 600, 500));
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+                showAlert("Ошибка", "Не удалось загрузить детали мероприятия");
+            }
+
     }
 
     private void showAlert(String title, String message) {
