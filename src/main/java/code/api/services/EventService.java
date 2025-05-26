@@ -1,6 +1,7 @@
 package code.api.services;
 
 import code.api.controllers.EventController;
+import code.api.dto.EventDto;
 import code.store.entities.EventEntity;
 import code.store.entities.OrganizerEntity;
 import code.store.entities.ParticipantEntity;
@@ -32,6 +33,18 @@ public class EventService {
 
         return eventRepository.save(eventEntity);
 
+    }
+    public EventEntity updateEvent(Long id, EventDto eventDto) {
+        EventEntity event = eventRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Мероприятие не найдено"));
+
+        event.setTitle(eventDto.getTitle());
+        event.setNumberOfSeats(eventDto.getNumberOfSeats());
+        event.setDateTime(eventDto.getDateTime());
+        event.setLocation(eventDto.getLocation());
+        event.setFormat(eventDto.getFormat());
+
+        return eventRepository.save(event);
     }
 
     public List<EventEntity> getAllEvents() {

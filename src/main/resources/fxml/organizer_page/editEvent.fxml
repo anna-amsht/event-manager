@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="code.javafx.controllers.EditEventController">
+    <stylesheets>
+        <URL value="@styles.css" />
+    </stylesheets>
+    <children>
+        <BorderPane prefHeight="600.0" prefWidth="800.0">
+            <left>
+                <VBox prefHeight="596.0" prefWidth="216.0" style="-fx-background-color: #9281D3;" BorderPane.alignment="CENTER">
+                    <children>
+                        <Button fx:id="createButton" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#gotocreateEvent" prefHeight="60.0" prefWidth="216.0" stylesheets="@styles.css" text="СОЗДАТЬ" textFill="WHITE">
+                            <VBox.margin>
+                                <Insets bottom="20.0" top="40.0" />
+                            </VBox.margin>
+                            <font>
+                                <Font name="Century Gothic" size="12.0" />
+                            </font>
+                            <cursor>
+                                <Cursor fx:constant="HAND" />
+                            </cursor>
+                            <graphic>
+                                <FontIcon iconColor="WHITE" iconLiteral="fas-plus" iconSize="25" wrappingWidth="29.0" />
+                            </graphic>
+                        </Button>
+                        <Button fx:id="editButton" alignment="BOTTOM_LEFT" mnemonicParsing="false" prefHeight="60.0" prefWidth="216.0" stylesheets="@styles.css" text="ИЗМЕНИТЬ" textFill="WHITE">
+                            <font>
+                                <Font name="System Bold" size="12.0" />
+                            </font>
+                            <cursor>
+                                <Cursor fx:constant="HAND" />
+                            </cursor>
+                            <VBox.margin>
+                                <Insets bottom="35.0" />
+                            </VBox.margin>
+                            <graphic>
+                                <FontIcon iconColor="WHITE" iconLiteral="fas-pen" wrappingWidth="29.0" />
+                            </graphic>
+                        </Button>
+                        <Button fx:id="inviteUserButton" alignment="BOTTOM_LEFT" mnemonicParsing="false" onAction="#inviteUser" prefHeight="60.0" prefWidth="216.0" stylesheets="@styles.css" text="ПРИГЛАСИТЬ" textFill="WHITE">
+                            <font>
+                                <Font name="System Bold" size="12.0" />
+                            </font>
+                            <cursor>
+                                <Cursor fx:constant="HAND" />
+                            </cursor>
+                            <graphic>
+                                <FontIcon iconColor="WHITE" iconLiteral="fas-envelope" wrappingWidth="26.0" />
+                            </graphic>
+                            <VBox.margin>
+                                <Insets bottom="50.0" />
+                            </VBox.margin>
+                        </Button>
+                        <Button fx:id="userModeButton" mnemonicParsing="false" onAction="#toUserMode" prefHeight="31.0" prefWidth="216.0" stylesheets="@styles.css" text="Режим участника" textFill="WHITE">
+                            <font>
+                                <Font name="System Bold" size="12.0" />
+                            </font>
+                            <cursor>
+                                <Cursor fx:constant="HAND" />
+                            </cursor>
+                            <VBox.margin>
+                                <Insets top="100.0" />
+                            </VBox.margin>
+                        </Button>
+                        <Button fx:id="exitFromProfileButton" mnemonicParsing="false" onAction="#toExitFromProfile" prefHeight="30.0" prefWidth="216.0" stylesheets="@styles.css" text="Выйти" textFill="WHITE">
+                            <font>
+                                <Font name="System Bold" size="12.0" />
+                            </font>
+                            <cursor>
+                                <Cursor fx:constant="HAND" />
+                            </cursor>
+                        </Button>
+                    </children>
+                </VBox>
+            </left>
+            <top>
+                <HBox prefHeight="63.0" prefWidth="800.0" style="-fx-background-color: #661fbc;" BorderPane.alignment="CENTER">
+                    <children>
+                        <FontIcon iconColor="WHITE" iconLiteral="mdi2a-account-circle" iconSize="45" wrappingWidth="45.0">
+                            <HBox.margin>
+                                <Insets left="30.0" top="10.0" />
+                            </HBox.margin>
+                        </FontIcon>
+                        <Label prefHeight="36.0" prefWidth="42.0" text="Label">
+                            <HBox.margin>
+                                <Insets left="15.0" top="15.0" />
+                            </HBox.margin>
+                            <font>
+                                <Font size="18.0" />
+                            </font>
+                        </Label>
+                        <FontIcon fx:id="exitButton" iconLiteral="fa-close" iconSize="20" onMouseClicked="#closePr" text="" wrappingWidth="25.0">
+                            <cursor>
+                                <Cursor fx:constant="HAND" />
+                            </cursor>
+                            <HBox.margin>
+                                <Insets left="635.0" top="20.0" />
+                            </HBox.margin>
+                        </FontIcon>
+                    </children></HBox>
+            </top>
+         <center>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                        <children>
+                            <BorderPane prefHeight="510.0" prefWidth="585.0">
+                                <top>
+                                    <HBox prefHeight="36.0" prefWidth="589.0" stylesheets="@styles.css" BorderPane.alignment="CENTER" />
+                                </top>
+                                <center>
+                                    <TableView fx:id="eventTableView" maxWidth="553.0" prefHeight="474.0" prefWidth="553.0" stylesheets="@styles.css" BorderPane.alignment="CENTER">
+                                        <columns>
+                                            <TableColumn fx:id="titleColumn" prefWidth="118.0" styleClass="column-header" text="Название" />
+                                            <TableColumn fx:id="seatsColumn" prefWidth="79.0" text="Кол-во мест" />
+                                            <TableColumn fx:id="dateColumn" minWidth="0.0" prefWidth="107.0" text="Дата" />
+                                            <TableColumn fx:id="placeColumn" prefWidth="58.0" text="Место" />
+                                            <TableColumn fx:id="formatColumn" prefWidth="73.0" text="Формат" />
+                                            <TableColumn prefWidth="151.0">
+                                                <cellValueFactory>
+                                                    <PropertyValueFactory property="dummy" />
+                                                </cellValueFactory>
+                                            </TableColumn>
+                                        </columns>
+                                    </TableView>
+                                </center>
+                            </BorderPane>
+                        </children>
+                    </AnchorPane>
+         </center>
+        </BorderPane>
+    </children>
+</AnchorPane>

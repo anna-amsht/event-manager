@@ -7,9 +7,13 @@ import code.store.entities.EventEntity;
 import code.store.entities.OrganizerEntity;
 import code.api.services.EventService;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -43,7 +47,26 @@ public class EventController {
 
         return eventDtoFactory.makeEventDto(savedEvent);
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateEvent(
+            @PathVariable Long id,
+            @RequestBody @Valid EventDto eventDto,
+            BindingResult bindingResult) {
 
+        // Валидация входных данных
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
+        }
+
+        try {
+            EventEntity updatedEvent = eventService.updateEvent(id, eventDto);
+            return ResponseEntity.ok(eventDtoFactory.makeEventDto(updatedEvent));
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity.badRequest().body("Ошибка целостности данных: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Ошибка сервера: " + e.getMessage());
+        }
+    }
     @GetMapping("/{id}")
     public EventDto getEventById(@PathVariable Long id) {
         EventEntity event = eventService.getEventById(id);

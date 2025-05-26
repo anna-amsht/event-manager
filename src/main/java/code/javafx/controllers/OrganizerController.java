@@ -156,15 +156,20 @@ public class OrganizerController implements Initializable {
                 for (EventDto dto : eventDtos) {
                     System.out.println("Processing event: " + dto.getTitle() +
                             " | Organizer: " + dto.getOrganizerId());
-                    String format = parseFormat(dto.getFormat()); // Нормализация формата
-                    events.add(new EventModel(
+                    String format = parseFormat(dto.getFormat());
+                    EventModel eventModel = new EventModel(
                             dto.getId(),
                             dto.getTitle(),
                             dto.getNumberOfSeats(),
                             dto.getDateTime(),
                             dto.getLocation(),
                             format
-                    ));
+                    );
+                    eventModel.setDescription(dto.getDescription());
+                    eventModel.setOrganizerId(dto.getOrganizerId());
+
+                    events.add(eventModel);
+
                 }
 
                 eventTableView.setItems(events);
@@ -190,7 +195,19 @@ public class OrganizerController implements Initializable {
     }
 
     public void edit(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/organizer_page/editEvent.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Ошибка", "Не удалось открыть редактор");
+        }
     }
+
 
     public void gotocreateEvent(ActionEvent actionEvent) {
         try {
