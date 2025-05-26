@@ -2,6 +2,7 @@ package code.javafx.controllers;
 
 import code.javafx.App;
 import code.javafx.models.RoleContext;
+import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -12,10 +13,15 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -30,68 +36,90 @@ public class RegisterController implements Initializable {
 
     @FXML
     public void register(MouseEvent mouseEvent) {
-        String username = userName.getText();
-        String pass = password.getText();
+        String username = userName.getText().trim();
+        String pass = password.getText().trim();
 
 
         if (username.isEmpty() || pass.isEmpty()) {
-            errorLabel.setText("Поля не могут быть пустыми!");
+            showError("Поля не могут быть пустыми!");
             return;
         }
 
         String role = RoleContext.selectedRole;
         if (role == null) {
-            errorLabel.setText("Ошибка с выбором роли.");
+            showError("Ошибка с выбором роли.");
             return;
         }
 
-        String urlStr = "";
-        if ("participant".equals(role)) {
-            urlStr = "http://localhost:8080/api/participants";
-        } else if ("organizer".equals(role)) {
-            urlStr = "http://localhost:8080/api/organizers";
-        }
-
         try {
-            URL url = new URL(urlStr);
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("POST");
-            con.setRequestProperty("Content-Type", "application/json; utf-8");
-            con.setDoOutput(true);
 
-            String jsonInput = String.format("{\"username\":\"%s\", \"password\":\"%s\"}", username, pass);
-            try (OutputStream os = con.getOutputStream()) {
-                byte[] input = jsonInput.getBytes("utf-8");
-                os.write(input, 0, input.length);
-            }
-
-            int responseCode = con.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED) {
-                errorLabel.setText("Регистрация прошла успешно.");
-                Parent root = FXMLLoader.load(getClass().getResource("/fxml/login_page/login.fxml"));
-                ((Stage)((Node) mouseEvent.getSource()).getScene().getWindow()).getScene().setRoot(root);
+            String jsonInput;
+            if ("participant".equals(role)) {
+                jsonInput = createParticipantJson(username, pass);
+            } else if ("organizer".equals(role)) {
+                jsonInput = createOrganizerJson(username, pass);
             } else {
-                InputStream stream = responseCode < 400 ? con.getInputStream() : con.getErrorStream();
-
-                try (BufferedReader br = new BufferedReader(
-                        new InputStreamReader(stream, StandardCharsets.UTF_8))) {
-
-                    String responseText = br.lines().collect(Collectors.joining());
-
-                    if (responseCode == HttpURLConnection.HTTP_OK) {
-                        errorLabel.setText("Регистрация успешна!");
-                    } else {
-                        errorLabel.setText(responseText);
-                    }
-                }
+                showError("Неизвестная роль");
+                return;
             }
 
-        } catch (IOException e) {
+
+            String urlStr = "http://localhost:8080/api/" + ("participant".equals(role) ? "participants" : "organizers");
+            HttpResponse<String> response = sendPostRequest(urlStr, jsonInput);
+
+
+            if (response.statusCode() == 200 || response.statusCode() == 201) {
+                showSuccessAndRedirect(mouseEvent);
+            } else {
+                showError(response.body());
+            }
+        } catch (Exception e) {
             e.printStackTrace();
-            errorLabel.setText("Ошибка подключения.");
+            showError("Ошибка подключения: " + e.getMessage());
         }
+    }
 
+    private String createParticipantJson(String username, String password) {
+        return String.format("{\"username\":\"%s\", \"password\":\"%s\"}",
+                username, password);
+    }
 
+    private String createOrganizerJson(String username, String password) {
+        return String.format("{\"username\":\"%s\", \"password\":\"%s\"}",
+                username, password);
+    }
+
+    private HttpResponse<String> sendPostRequest(String url, String json) throws Exception {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        return client.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
+    private void showError(String message) {
+        errorLabel.setText(message);
+        errorLabel.setStyle("-fx-text-fill: #ff4444;");
+    }
+
+    private void showSuccessAndRedirect(MouseEvent event) throws IOException {
+        errorLabel.setText("Регистрация прошла успешно!");
+        errorLabel.setStyle("-fx-text-fill: #00C851;");
+
+        // Задержка перед редиректом
+        PauseTransition delay = new PauseTransition(Duration.seconds(1.5));
+        delay.setOnFinished(e -> {
+            try {
+                Parent root = FXMLLoader.load(getClass().getResource("/fxml/login_page/login.fxml"));
+                ((Stage)((Node) event.getSource()).getScene().getWindow()).getScene().setRoot(root);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+        delay.play();
     }
 
     public void exit(MouseEvent mouseEvent) {

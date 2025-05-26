@@ -1,0 +1,53 @@
+.button{
+    -fx-font-style: "Century Gothic";
+    -fx-background-color: transparent;
+    -fx-font-size: 20px;
+    -fx-text-fill: white;
+}
+.button:hover{
+    -fx-font-size: 21,5px;
+    -fx-font-weight: bold;
+}
+#exitButton{
+    -fx-fill: white;
+}
+
+#exitButton:hover{
+    -fx-fill: red;
+    -fx-font-size: 20px;
+}
+.event-box {
+    -fx-background-color: #9281D3;
+    -fx-background-radius: 8;
+    -fx-padding: 12 15;
+    -fx-spacing: 8;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);
+}
+.event-box:hover {
+    -fx-background-color: #f8f8f8;
+    -fx-border-color: #9281D3;
+}
+
+.event-title {
+    -fx-text-fill: #661fbc;
+    -fx-font-weight: bold;
+    -fx-font-size: 14;
+}
+
+.details-button {
+    -fx-background-color: #661fbc;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+    -fx-max-width: 100px;
+    -fx-max-height: 5px;
+    -fx-font-size: 14px
+}
+.details-button:hover{
+    -fx-font-size: 14px
+}
+
+
+

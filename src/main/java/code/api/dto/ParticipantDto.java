@@ -20,6 +20,4 @@ public class ParticipantDto {
     String password;
 
     boolean isRegistered;
-
-
 }

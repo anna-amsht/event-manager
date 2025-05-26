@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="code.javafx.controllers.ParticipantController">
+    <stylesheets>
+        <URL value="@styles.css" />
+    </stylesheets>
+    <children>
+        <BorderPane prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #661fbc;">
+            <left>
+                <VBox prefHeight="537.0" prefWidth="243.0" style="-fx-background-color: #661fbc; -fx-border-color: #9281D3; -fx-border-width: 2;" BorderPane.alignment="CENTER">
+                    <children>
+                        <Button fx:id="createButton" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#gotovisitEvent" prefHeight="60.0" prefWidth="246.0" stylesheets="@styles.css" text="ЗАПИСАТЬСЯ" textFill="WHITE">
+                            <VBox.margin>
+                                <Insets bottom="20.0" top="40.0" />
+                            </VBox.margin>
+                            <font>
+                                <Font name="Century Gothic" size="12.0" />
+                            </font>
+                            <cursor>
+                                <Cursor fx:constant="HAND" />
+                            </cursor>
+                            <graphic>
+                                <FontIcon iconColor="WHITE" iconLiteral="fas-plus" iconSize="25" wrappingWidth="29.0" />
+                            </graphic>
+                        </Button>
+                        <Button fx:id="editButton" alignment="BOTTOM_LEFT" mnemonicParsing="false" onAction="#gotoVisitedEvents" prefHeight="60.0" prefWidth="246.0" stylesheets="@styles.css" text="МЕРОПРИЯТИЯ" textFill="WHITE">
+                            <font>
+                                <Font name="System Bold" size="12.0" />
+                            </font>
+                            <cursor>
+                                <Cursor fx:constant="HAND" />
+                            </cursor>
+                            <VBox.margin>
+                                <Insets bottom="35.0" />
+                            </VBox.margin>
+                            <graphic>
+                                <FontIcon iconColor="WHITE" iconLiteral="fas-pen" wrappingWidth="29.0" />
+                            </graphic>
+                        </Button>
+                        <Button fx:id="inviteUserButton" alignment="BOTTOM_LEFT" mnemonicParsing="false" onAction="#gotoInvitations" prefHeight="60.0" prefWidth="246.0" stylesheets="@styles.css" text="ПРИГЛАШЕНИЯ" textFill="WHITE">
+                            <font>
+                                <Font name="System Bold" size="12.0" />
+                            </font>
+                            <cursor>
+                                <Cursor fx:constant="HAND" />
+                            </cursor>
+                            <graphic>
+                                <FontIcon iconColor="WHITE" iconLiteral="fas-envelope" wrappingWidth="26.0" />
+                            </graphic>
+                            <VBox.margin>
+                                <Insets bottom="180.0" />
+                            </VBox.margin>
+                        </Button>
+                        <Button fx:id="exitFromProfileButton" mnemonicParsing="false" onAction="#toExitFromProfile" prefHeight="30.0" prefWidth="216.0" stylesheets="@styles.css" text="Выйти" textFill="WHITE">
+                            <font>
+                                <Font name="System Bold" size="12.0" />
+                            </font>
+                            <cursor>
+                                <Cursor fx:constant="HAND" />
+                            </cursor>
+                        </Button>
+                    </children>
+                </VBox>
+            </left>
+            <top>
+                <HBox prefHeight="63.0" prefWidth="800.0" style="-fx-background-color: #9281D3;" BorderPane.alignment="CENTER">
+                    <children>
+                        <FontIcon iconColor="WHITE" iconLiteral="mdi2a-account-circle" iconSize="45" wrappingWidth="45.0">
+                            <HBox.margin>
+                                <Insets left="30.0" top="10.0" />
+                            </HBox.margin>
+                        </FontIcon>
+                        <Label prefHeight="36.0" prefWidth="42.0" text="Label">
+                            <HBox.margin>
+                                <Insets left="15.0" top="15.0" />
+                            </HBox.margin>
+                            <font>
+                                <Font size="18.0" />
+                            </font>
+                        </Label>
+                        <FontIcon fx:id="exitButton" iconLiteral="fa-close" iconSize="20" onMouseClicked="#closePr" text="" wrappingWidth="25.0">
+                            <cursor>
+                                <Cursor fx:constant="HAND" />
+                            </cursor>
+                            <HBox.margin>
+                                <Insets left="635.0" top="20.0" />
+                            </HBox.margin>
+                        </FontIcon>
+                    </children></HBox>
+            </top>
+         <center>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <children>
+                  <ImageView fitHeight="320.0" fitWidth="334.0" layoutX="117.0" layoutY="83.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="117.0">
+                     <image>
+                        <Image url="@participantImage.png" />
+                     </image>
+                  </ImageView>
+                  <Label alignment="CENTER" contentDisplay="CENTER" layoutX="142.0" layoutY="400.0" prefHeight="42.0" prefWidth="298.0" style="-fx-text-fill: white; -fx-font-size: 22;" text="Добро пожаловать!" />
+               </children>
+            </AnchorPane>
+         </center>
+        </BorderPane>
+    </children>
+</AnchorPane>
