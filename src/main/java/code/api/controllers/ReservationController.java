@@ -66,4 +66,13 @@ public class ReservationController {
 
         return result;
     }
+    @GetMapping("/by-participant-and-event")
+    public ReservationDto getReservationByParticipantAndEvent(
+            @RequestParam Long participantId,
+            @RequestParam Long eventId) {
+
+        return reservationRepository.findByParticipantIdAndEventId(participantId, eventId)
+                .map(reservationDtoFactory::makeReservationDto)
+                .orElseThrow(() -> new RuntimeException("Бронь не найдена"));
+    }
 }

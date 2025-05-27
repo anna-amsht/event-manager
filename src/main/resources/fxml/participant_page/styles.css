@@ -31,6 +31,24 @@
     -fx-border-color: #9281D3;
 }
 
+.cancel-button{
+    -fx-background-color: #661fbc;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+    -fx-max-width: 150px;
+    -fx-max-height: 7px;
+    -fx-font-size: 14px
+}
+.cancel-button:hover{
+    -fx-text-fill: white;
+    -fx-border-color: #661fbc;
+    -fx-border-style: solid;
+    -fx-background-color: #661fbc;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+
+}
+
 .event-title {
     -fx-text-fill: #661fbc;
     -fx-font-weight: bold;
