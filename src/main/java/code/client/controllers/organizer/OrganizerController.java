@@ -1,9 +1,10 @@
-package code.javafx.controllers;
+package code.client.controllers.organizer;
 
 import code.api.dto.EventDto;
-import code.javafx.models.EventModel;
-import code.javafx.models.SessionContext;
-import code.store.entities.OrganizerEntity;
+import code.api.dto.OrganizerDto;
+import code.client.App;
+import code.client.models.EventModel;
+import code.client.models.SessionContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -27,7 +28,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -78,7 +78,7 @@ public class OrganizerController implements Initializable {
             }
         });
 
-        OrganizerEntity currentOrganizer = SessionContext.getCurrentOrganizer();
+        OrganizerDto currentOrganizer = SessionContext.getCurrentOrganizer();
         if (currentOrganizer != null) {
             this.organizerId = currentOrganizer.getId();
             loadEvents();
@@ -192,6 +192,20 @@ public class OrganizerController implements Initializable {
     }
 
     public void inviteUser(ActionEvent actionEvent) {
+        try {
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/organizer_page/invite_page.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Ошибка", "Не удалось загрузить страницу приглашений");
+        }
     }
 
     public void edit(ActionEvent actionEvent) {
@@ -230,11 +244,18 @@ public class OrganizerController implements Initializable {
     }
 
     public void toExitFromProfile(ActionEvent actionEvent) {
+        SessionContext.clear();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/choice_page/choice.fxml"));
+            Parent root = loader.load();
+            App.stage.getScene().setRoot(root);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     public void closePr(MouseEvent mouseEvent) {
         System.exit(0);
     }
-
 
 }

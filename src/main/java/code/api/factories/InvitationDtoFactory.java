@@ -14,10 +14,9 @@ public class InvitationDtoFactory {
 
         return InvitationDto.builder()
                 .id(entity.getId())
+                .eventTitle(entity.getEvent().getTitle())
+                .organizerName(entity.getOrganizer().getUsername())
                 .status(entity.getStatus())
-                .eventId(entity.getEvent().getId())
-                .organizerId(entity.getOrganizer().getId())
-                .participantId(entity.getParticipant().getId())
                 .build();
 
 

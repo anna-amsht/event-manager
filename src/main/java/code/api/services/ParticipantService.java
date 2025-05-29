@@ -1,6 +1,8 @@
 package code.api.services;
 
+import code.api.exceptions.NotFoundException;
 import code.store.entities.*;
+import code.store.repositories.InvitationRepository;
 import code.store.repositories.ParticipantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import java.util.List;
 public class ParticipantService {
 
     private final ParticipantRepository participantRepository;
+    private final InvitationRepository invitationRepository;
 
 
     public ParticipantEntity registerParticipant(ParticipantEntity participantEntity) {
@@ -31,16 +34,8 @@ public class ParticipantService {
         return events;
     }
 
-    public List<InvitationEntity> getInvitationsForParticipant(Long participantId) {
-        ParticipantEntity participant = participantRepository.findById(participantId)
-                .orElseThrow(() -> new RuntimeException("Участник не найден"));
-
-        List<InvitationEntity> pendingInvitations = new ArrayList<>();
-        for (InvitationEntity invitation : participant.getInvitations()) {
-            if (invitation.getStatus() == InvitationStatus.PENDING) {
-                pendingInvitations.add(invitation);
-            }
-        }
-        return pendingInvitations;
+    public List<InvitationEntity> getInvitationsByParticipantId(Long participantId) {
+        return invitationRepository.findByParticipantId(participantId)
+                .orElseThrow(() -> new NotFoundException("Participant not found"));
     }
 }

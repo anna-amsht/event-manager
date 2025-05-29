@@ -79,6 +79,16 @@
     -fx-background-color: #3e8e41;
 }
 
+#backButton{
+    -fx-fill: white;
+    -fx-font-size: 20px;
+}
+
+#backButton:hover{
+    -fx-font-size: 22px;
+}
+
+
 
 
 

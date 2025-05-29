@@ -1,12 +1,10 @@
-package code.javafx.controllers;
+package code.client.controllers;
 
 import code.api.dto.OrganizerDto;
 import code.api.dto.ParticipantDto;
-import code.javafx.App;
-import code.javafx.models.SessionContext;
-import code.store.entities.OrganizerEntity;
-import code.javafx.models.RoleContext;
-import code.store.entities.ParticipantEntity;
+import code.client.App;
+import code.client.models.SessionContext;
+import code.client.models.RoleContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -27,9 +25,7 @@ import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 public class LoginController implements Initializable {
     @FXML private TextField userName;
@@ -58,14 +54,14 @@ public class LoginController implements Initializable {
         }
 
         try {
-            // 1. Подготовка запроса
+
             String jsonInput = String.format("{\"username\":\"%s\", \"password\":\"%s\"}", username, pass);
             String urlStr = "http://localhost:8080/api/" +
                     ("participant".equals(role) ? "participants" : "organizers") + "/login";
 
             HttpResponse<String> response = sendLoginRequest(urlStr, jsonInput);
 
-            // 2. Обработка ответа
+
             if (response.statusCode() == HttpURLConnection.HTTP_OK) {
                 handleSuccessfulLogin(response.body(), role, mouseEvent);
             } else {
@@ -100,12 +96,7 @@ public class LoginController implements Initializable {
                 showError("Неверные данные пользователя");
                 return;
             }
-
-            OrganizerEntity organizer = new OrganizerEntity();
-            organizer.setId(organizerDto.getId());
-            organizer.setUsername(organizerDto.getUsername());
-            SessionContext.setCurrentOrganizer(organizer);
-
+            SessionContext.setCurrentOrganizer(organizerDto); // Сохраняем DTO
             loadView("/fxml/organizer_page/orgPage.fxml", event);
         }
         else if ("participant".equals(role)) {
@@ -114,12 +105,7 @@ public class LoginController implements Initializable {
                 showError("Неверные данные пользователя");
                 return;
             }
-
-            ParticipantEntity participant = new ParticipantEntity();
-            participant.setId(participantDto.getId());
-            participant.setUsername(participantDto.getUsername());
-            SessionContext.setCurrentParticipant(participant);
-
+            SessionContext.setCurrentParticipant(participantDto);
             loadView("/fxml/participant_page/patPage.fxml", event);
         }
 

@@ -11,7 +11,7 @@
 <?import javafx.scene.text.Text?>
 
 <?import java.net.URL?>
-<BorderPane fx:id="choicePage" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="code.javafx.controllers.ChoiceRoleController">
+<BorderPane fx:id="choicePage" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="code.client.controllers.ChoiceRoleController">
    <stylesheets>
       <URL value="@style.css"/>
    </stylesheets>

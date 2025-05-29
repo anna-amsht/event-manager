@@ -1,8 +1,9 @@
-package code.javafx.controllers;
+package code.client.controllers.organizer;
 
 import code.api.dto.EventDto;
-import code.javafx.models.SessionContext;
-import code.store.entities.OrganizerEntity;
+import code.api.dto.OrganizerDto;
+import code.client.App;
+import code.client.models.SessionContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,6 +11,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -78,7 +81,7 @@ public class CreateEventController implements Initializable {
             return;
         }
 
-        OrganizerEntity currentOrganizer = SessionContext.getCurrentOrganizer();
+        OrganizerDto currentOrganizer = SessionContext.getCurrentOrganizer();
         if (currentOrganizer == null) {
             errorLabel.setText("Организатор не найден в сессии!");
             return;
@@ -130,9 +133,32 @@ public class CreateEventController implements Initializable {
     }
 
     public void gotoedit(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/organizer_page/editEvent.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void gotoinviteUser(ActionEvent actionEvent) {
+        try {
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/organizer_page/invite_page.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void toUserMode(ActionEvent actionEvent) {
@@ -140,6 +166,13 @@ public class CreateEventController implements Initializable {
 
     public void toExitFromProfile(ActionEvent actionEvent) {
         SessionContext.clear();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/choice_page/choice.fxml"));
+            Parent root = loader.load();
+            App.stage.getScene().setRoot(root);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     public void closePr(MouseEvent mouseEvent) {

@@ -1,21 +1,26 @@
-package code.javafx.controllers;
+package code.client.controllers.organizer;
 
 import code.api.dto.EventDto;
-import code.javafx.models.EventModel;
-import code.javafx.models.SessionContext;
-import code.store.entities.OrganizerEntity;
+import code.api.dto.OrganizerDto;
+import code.client.App;
+import code.client.models.EventModel;
+import code.client.models.SessionContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -71,7 +76,7 @@ public class EditEventController implements Initializable {
     }
 
     private void loadEvents() {
-        OrganizerEntity currentOrganizer = SessionContext.getCurrentOrganizer();
+        OrganizerDto currentOrganizer = SessionContext.getCurrentOrganizer();
         if (currentOrganizer != null) {
             this.organizerId = currentOrganizer.getId();
 
@@ -259,17 +264,53 @@ public class EditEventController implements Initializable {
     }
 
     public void gotocreateEvent(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/organizer_page/createEvent.fxml"));
+            Parent root = loader.load();
+
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void inviteUser(ActionEvent actionEvent) {
+        try {
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/organizer_page/invite_page.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert( "Ошибка", "Не удалось загрузить страницу приглашений");
+        }
     }
 
     public void toUserMode(ActionEvent actionEvent) {
     }
 
     public void toExitFromProfile(ActionEvent actionEvent) {
+        SessionContext.clear();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/choice_page/choice.fxml"));
+            Parent root = loader.load();
+            App.stage.getScene().setRoot(root);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     public void closePr(MouseEvent mouseEvent) {
+        System.exit(0);
     }
 }

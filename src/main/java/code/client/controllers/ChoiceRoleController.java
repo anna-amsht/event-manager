@@ -1,7 +1,7 @@
-package code.javafx.controllers;
+package code.client.controllers;
 
 
-import code.javafx.models.RoleContext;
+import code.client.models.RoleContext;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;

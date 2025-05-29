@@ -1,7 +1,5 @@
-package code.javafx.models;
+package code.client.models;
 
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;

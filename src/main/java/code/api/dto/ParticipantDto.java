@@ -16,7 +16,7 @@ public class ParticipantDto {
     @NonNull
     String username;
 
-    @NonNull
+
     String password;
 
     boolean isRegistered;

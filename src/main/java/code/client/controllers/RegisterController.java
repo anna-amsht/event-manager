@@ -1,7 +1,7 @@
-package code.javafx.controllers;
+package code.client.controllers;
 
-import code.javafx.App;
-import code.javafx.models.RoleContext;
+import code.client.App;
+import code.client.models.RoleContext;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,15 +16,12 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.*;
-import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 public class RegisterController implements Initializable {
     @FXML private TextField userName;
@@ -109,7 +106,6 @@ public class RegisterController implements Initializable {
         errorLabel.setText("Регистрация прошла успешно!");
         errorLabel.setStyle("-fx-text-fill: #00C851;");
 
-        // Задержка перед редиректом
         PauseTransition delay = new PauseTransition(Duration.seconds(1.5));
         delay.setOnFinished(e -> {
             try {

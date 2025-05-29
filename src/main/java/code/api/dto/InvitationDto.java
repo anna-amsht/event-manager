@@ -19,8 +19,6 @@ public class InvitationDto {
     @Enumerated(EnumType.STRING)
     InvitationStatus status;
 
-    Long eventId;
-    Long participantId;
-    Long organizerId;
-
+    String eventTitle;
+    String organizerName;
 }

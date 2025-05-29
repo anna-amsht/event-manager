@@ -53,7 +53,6 @@ public class EventController {
             @RequestBody @Valid EventDto eventDto,
             BindingResult bindingResult) {
 
-        // Валидация входных данных
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
         }

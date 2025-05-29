@@ -1,10 +1,12 @@
 package code.api.services;
 
+import code.api.exceptions.NotFoundException;
 import code.store.entities.*;
 import code.store.repositories.EventRepository;
 import code.store.repositories.InvitationRepository;
 import code.store.repositories.OrganizerRepository;
 import code.store.repositories.ParticipantRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +20,7 @@ public class InvitationService {
     private final ParticipantRepository participantRepository;
     private final EventService eventService;
 
-    public void sendInvitation(Long organizerId, Long participantId, Long eventId) {
+    public InvitationEntity sendInvitation(Long organizerId, Long participantId, Long eventId) {
 
         OrganizerEntity organizer = organizerRepository.findById(organizerId)
                 .orElseThrow(() -> new RuntimeException("Организатор не найден"));
@@ -36,10 +38,10 @@ public class InvitationService {
                 .status(InvitationStatus.PENDING)
                 .build();
 
-        invitationRepository.save(invitation);
+       return invitationRepository.save(invitation);
     }
 
-    public void acceptInvitation(Long invitationId) {
+    public InvitationEntity acceptInvitation(Long invitationId) {
         InvitationEntity invitation = invitationRepository.findById(invitationId)
                 .orElseThrow(() -> new RuntimeException("Приглашение не найдено"));
 
@@ -50,8 +52,15 @@ public class InvitationService {
         eventService.registerParticipant(invitation.getEvent(), invitation.getParticipant());
 
         invitation.setStatus(InvitationStatus.ACCEPTED);
-        invitationRepository.save(invitation);
+        return invitationRepository.save(invitation);
 
+    }
+    public InvitationEntity rejectInvitation(Long id) {
+        InvitationEntity invitation = invitationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Invitation not found"));
+
+        invitation.setStatus(InvitationStatus. DECLINED);
+        return invitationRepository.save(invitation);
     }
 
     public void deleteInvitation(Long invitationId) {
@@ -59,6 +68,14 @@ public class InvitationService {
             throw new RuntimeException("Приглашение не найдено");
         }
         invitationRepository.deleteById(invitationId);
+    }
+
+    public void updateStatus(Long invitationId, InvitationStatus status) {
+        InvitationEntity invitation = invitationRepository.findById(invitationId)
+                .orElseThrow(() -> new NotFoundException("Приглашение не найдено"));
+
+        invitation.setStatus(status);
+        invitationRepository.save(invitation);
     }
 
 }

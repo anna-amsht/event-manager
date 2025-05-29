@@ -1,19 +1,15 @@
-package code.javafx.controllers;
+package code.client.controllers.participant;
 
 import code.api.dto.EventDto;
+import code.api.dto.ParticipantDto;
 import code.api.dto.ReservationDto;
-import code.javafx.models.SessionContext;
-import code.store.entities.ParticipantEntity;
+import code.client.models.SessionContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
-import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -66,7 +62,7 @@ public class VisitEventController implements Initializable {
 
     private boolean isAlreadyRegistered() {
         try {
-            ParticipantEntity participant = SessionContext.getCurrentParticipant();
+            ParticipantDto participant = SessionContext.getCurrentParticipant();
             if (participant == null) return false;
 
             String url = API_URL + "?participantId=" + participant.getId();
@@ -90,14 +86,12 @@ public class VisitEventController implements Initializable {
     @FXML
     private void handleRegisterButton() {
         try {
-            // Получаем текущего участника из сессии
-            ParticipantEntity currentParticipant = SessionContext.getCurrentParticipant();
+            ParticipantDto currentParticipant = SessionContext.getCurrentParticipant();
             if (currentParticipant == null) {
                 showAlert("Ошибка", "Участник не авторизован");
                 return;
             }
 
-            // Создаем запрос на запись
             String url = API_URL + "?participantId=" + currentParticipant.getId() +
                     "&eventId=" + event.getId();
 

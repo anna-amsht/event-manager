@@ -1,11 +1,13 @@
-package code.javafx.controllers;
+package code.client.controllers.participant;
 
 import code.api.dto.EventDto;
+import code.api.dto.ParticipantDto;
 import code.api.dto.ReservationDto;
-import code.javafx.models.SessionContext;
+import code.client.App;
+import code.client.models.SessionContext;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -20,7 +22,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -136,11 +137,10 @@ public class RegisteredEventController implements Initializable {
             String url = RESERVATIONS_API + "/by-participant-and-event?participantId=" +
                     participantId + "&eventId=" + eventId;
 
-            // 1. Находим ID бронирования
+
             String reservationJson = sendGetRequest(url);
             ReservationDto reservation = mapper.readValue(reservationJson, ReservationDto.class);
 
-            // 2. Отправляем запрос на отмену
             String deleteUrl = RESERVATIONS_API + "/" + reservation.getId();
             sendDeleteRequest(deleteUrl);
 
@@ -182,15 +182,65 @@ public class RegisteredEventController implements Initializable {
 
 
     public void closePr(MouseEvent mouseEvent) {
+        System.exit(0);
     }
 
     public void toExitFromProfile(javafx.event.ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/choice_page/choice.fxml"));
+            Parent root = loader.load();
+            App.stage.getScene().setRoot(root);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     public void gotoInvitations(javafx.event.ActionEvent actionEvent) {
+        try {
+            ParticipantDto currentParticipant = SessionContext.getCurrentParticipant();
+            if (currentParticipant == null || currentParticipant.getId() == null) {
+                showAlert("Ошибка авторизации", "Необходимо войти в систему");
+                return;
+            }
+
+            System.out.println("Переход на страницу приглашений. ID участника: " +
+                    currentParticipant.getId());
+
+
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/fxml/participant_page/invitations.fxml")
+            );
+            Parent root = loader.load();
+
+            InvitationsController controller = loader.getController();
+            controller.initData(currentParticipant.getId());
+
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e) {
+            System.err.println("Ошибка при загрузке страницы приглашений:");
+            e.printStackTrace();
+            showAlert("Ошибка",
+                    "Не удалось загрузить интерфейс: " + e.getMessage());
+        }
+
     }
 
-    public void gotoAllEvents(javafx.event.ActionEvent actionEvent) {
-    }
+    public void togoRegisterIvent(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/participant_page/patEvents.fxml"));
+            Parent root = loader.load();
 
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

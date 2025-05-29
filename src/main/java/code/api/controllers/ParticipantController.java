@@ -22,7 +22,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -76,7 +78,7 @@ public class ParticipantController {
 
     @GetMapping("/{participantId}/invitations")
     public List<InvitationDto> getInvitations(@PathVariable Long participantId) {
-        List<InvitationEntity> invitations = participantService.getInvitationsForParticipant(participantId);
+        List<InvitationEntity> invitations = participantService.getInvitationsByParticipantId(participantId);
         List<InvitationDto> result = new ArrayList<>();
 
         for (InvitationEntity invitation : invitations) {
@@ -84,5 +86,33 @@ public class ParticipantController {
         }
 
         return result;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ParticipantDto>> getAllParticipants() {
+        List<ParticipantEntity> participants = participantRepository.findAll();
+
+        if (participants == null || participants.isEmpty()) {
+            return ResponseEntity.ok(Collections.emptyList());
+        }
+
+        List<ParticipantDto> result = new ArrayList<>();
+        for (ParticipantEntity participant : participants) {
+            result.add(participantDtoFactory.makeParticipantDto(participant));
+        }
+
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/secure")
+    public ResponseEntity<List<ParticipantDto>> getAllParticipantsSecure() {
+        List<ParticipantEntity> entities = participantRepository.findAll();
+        List<ParticipantDto> dtos = new ArrayList<>(entities.size());
+
+        for (ParticipantEntity entity : entities) {
+            dtos.add(participantDtoFactory.makeSecureParticipantDto(entity));
+        }
+
+        return ResponseEntity.ok(dtos);
     }
 }

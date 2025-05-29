@@ -4,40 +4,57 @@ import code.api.dto.InvitationDto;
 import code.api.factories.InvitationDtoFactory;
 import code.store.entities.InvitationEntity;
 import code.api.services.InvitationService;
+import code.store.entities.InvitationStatus;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
-@RequestMapping("/api/invitaions")
+@RequestMapping("/api/invitations")
 @Transactional
 public class InvitationController {
 
-    InvitationService invitationService;
-    InvitationDtoFactory invitationDtoFactory;
+    private final InvitationService invitationService;
+    private final InvitationDtoFactory invitationDtoFactory;
 
-    // TODO: в InvitationService заменить void на EventEntity
-//    @PostMapping("/send")
-//    public InvitationDto sendInvitation(@RequestBody InvitationDto dto) {
-//        InvitationEntity invitation = invitationService.sendInvitation(
-//                dto.getOrganizerId(),
-//                dto.getParticipantId(),
-//                dto.getEventId()
-//        );
-//        return invitationDtoFactory.makeInvitationDto(invitation);
-//    }
-    // TODO: в InvitationService заменить void на EventEntity
-//    @PostMapping("accept/{id}")
-//    public InvitationDto acceptInvitation(@PathVariable("id") Long id) {
-//        InvitationEntity invitation = invitationService.acceptInvitation(id);
-//        return invitationDtoFactory.makeInvitationDto(invitation);
-//    }
+    @PostMapping("/send")
+    public ResponseEntity<InvitationDto> sendInvitation(
+            @RequestParam Long organizerId,
+            @RequestParam Long participantId,
+            @RequestParam Long eventId
+    ) {
+        var invitation = invitationService.sendInvitation(organizerId, participantId, eventId);
+        return ResponseEntity.ok(invitationDtoFactory.makeInvitationDto(invitation));
+    }
+
+    @PostMapping("/{id}/accept")
+    public ResponseEntity<InvitationDto> acceptInvitation(@PathVariable Long id) {
+        var updatedInvitation = invitationService.acceptInvitation(id);
+        return ResponseEntity.ok(invitationDtoFactory.makeInvitationDto(updatedInvitation));
+    }
+
+    @PostMapping("/{id}/reject")
+    public ResponseEntity<InvitationDto> rejectInvitation(@PathVariable Long id) {
+        var updatedInvitation = invitationService.rejectInvitation(id);
+        return ResponseEntity.ok(invitationDtoFactory.makeInvitationDto(updatedInvitation));
+    }
+
     @DeleteMapping("/{id}")
-    public void deleteInvitation(@PathVariable Long id){
+    public ResponseEntity<Void> deleteInvitation(@PathVariable Long id) {
         invitationService.deleteInvitation(id);
+        return ResponseEntity.noContent().build();
+    }
+    @PatchMapping("/{invitationId}/{status}")
+    public ResponseEntity<Void> updateInvitationStatus(
+            @PathVariable Long invitationId,
+            @PathVariable String status
+    ) {
+        invitationService.updateStatus(invitationId, InvitationStatus.valueOf(status.toUpperCase()));
+        return ResponseEntity.ok().build();
     }
 }

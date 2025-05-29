@@ -15,7 +15,7 @@
 <?import javafx.scene.text.Text?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="code.javafx.controllers.CreateEventController">
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="code.client.controllers.organizer.CreateEventController">
     <stylesheets>
         <URL value="@styles.css" />
     </stylesheets>
@@ -161,7 +161,7 @@
                               <Cursor fx:constant="TEXT" />
                            </cursor>
                         </TextField>
-                        <FontIcon iconLiteral="fa-arrow-left"  iconSize="20" layoutX="70.0" layoutY="113.0" onMouseClicked="#back">
+                        <FontIcon iconLiteral="fa-arrow-left"  iconSize="20" layoutX="70.0" layoutY="113.0"  onMouseClicked="#back" >
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>

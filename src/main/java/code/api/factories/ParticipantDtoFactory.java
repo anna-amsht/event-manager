@@ -20,4 +20,13 @@ public class ParticipantDtoFactory {
 
     }
 
+    public ParticipantDto makeSecureParticipantDto(ParticipantEntity entity) {
+        return ParticipantDto.builder()
+                .id(entity.getId())
+                .username(entity.getUsername())
+                .password(null)
+                .isRegistered(entity.isRegistered())
+                .build();
+    }
+
 }
