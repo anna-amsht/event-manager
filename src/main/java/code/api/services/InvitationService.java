@@ -10,6 +10,8 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class InvitationService {
@@ -76,6 +78,12 @@ public class InvitationService {
 
         invitation.setStatus(status);
         invitationRepository.save(invitation);
+    }
+    public List<InvitationEntity> findInvitationsByOrganizerId(Long organizerId) {
+        if (!organizerRepository.existsById(organizerId)) {
+            throw new RuntimeException("Организатор не найден");
+        }
+        return invitationRepository.findByOrganizerId(organizerId);
     }
 
 }

@@ -21,4 +21,5 @@ public class InvitationDto {
 
     String eventTitle;
     String organizerName;
+    String participantName;
 }

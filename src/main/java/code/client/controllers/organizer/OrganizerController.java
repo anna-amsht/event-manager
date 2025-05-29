@@ -1,12 +1,15 @@
 package code.client.controllers.organizer;
 
 import code.api.dto.EventDto;
+import code.api.dto.InvitationDto;
 import code.api.dto.OrganizerDto;
 import code.client.App;
 import code.client.models.EventModel;
 import code.client.models.SessionContext;
+import code.store.entities.InvitationStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,6 +22,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.BufferedReader;
@@ -49,6 +53,17 @@ public class OrganizerController implements Initializable {
     @FXML
     private TableColumn<EventModel, String> formatColumn;
 
+    @FXML
+    private TableView<InvitationDto> invitationsTableView;
+    @FXML
+    private TableColumn<InvitationDto, String> eventTitleColumn;
+    @FXML
+    private TableColumn<InvitationDto, String> participantColumn;
+    @FXML
+    private TableColumn<InvitationDto, InvitationStatus> statusColumn;
+    @FXML
+    private TableColumn<InvitationDto, Void> actionColumn;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
@@ -78,13 +93,71 @@ public class OrganizerController implements Initializable {
             }
         });
 
+        initializeInvitationsTable();
+
         OrganizerDto currentOrganizer = SessionContext.getCurrentOrganizer();
         if (currentOrganizer != null) {
             this.organizerId = currentOrganizer.getId();
             loadEvents();
+            loadInvitations();
         } else {
             System.err.println("Организатор не найден в сессии!");
         }
+
+    }
+
+    private void initializeInvitationsTable() {
+        // Проверка инициализации столбцов
+        if (eventTitleColumn == null || participantColumn == null ||
+                statusColumn == null || actionColumn == null) {
+            System.err.println("Ошибка: Не все столбцы инициализированы в FXML!");
+            return;
+        }
+
+        // Настройка привязки данных
+        eventTitleColumn.setCellValueFactory(new PropertyValueFactory<>("eventTitle"));
+        participantColumn.setCellValueFactory(cellData -> {
+            // Предполагаем, что у InvitationDto есть поле participantName
+            return new SimpleStringProperty(cellData.getValue().getParticipantName());
+        });
+
+        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+        statusColumn.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(InvitationStatus status, boolean empty) {
+                super.updateItem(status, empty);
+                if (empty || status == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(status.toString());
+                    switch (status) {
+                        case ACCEPTED -> setTextFill(Color.GREEN);
+                        case DECLINED -> setTextFill(Color.RED);
+                        case PENDING -> setTextFill(Color.ORANGE);
+                    }
+                }
+            }
+        });
+
+        // Настройка кнопки действия
+        actionColumn.setCellFactory(param -> new TableCell<>() {
+            private final Button cancelButton = new Button("Отменить");
+
+            {
+                cancelButton.getStyleClass().add("edit-button");
+                cancelButton.setOnAction(event -> {
+                    InvitationDto invitation = getTableView().getItems().get(getIndex());
+                    cancelInvitation(invitation.getId());
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : cancelButton);
+            }
+        });
     }
 
 
@@ -177,6 +250,72 @@ public class OrganizerController implements Initializable {
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void loadInvitations() {
+        new Thread(() -> {
+            try {
+                String url = baseUrl.replace("/api/events", "/api/invitations/organizer") +
+                        "?organizerId=" + this.organizerId;
+
+                HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
+                con.setRequestMethod("GET");
+
+                if (con.getResponseCode() == 200) {
+                    String json = new BufferedReader(new InputStreamReader(con.getInputStream()))
+                            .lines().collect(Collectors.joining("\n"));
+
+                    ObjectMapper mapper = new ObjectMapper();
+                    List<InvitationDto> invitations = mapper.readValue(
+                            json,
+                            mapper.getTypeFactory().constructCollectionType(List.class, InvitationDto.class)
+                    );
+
+                    Platform.runLater(() -> {
+                        invitationsTableView.getItems().setAll(FXCollections.observableArrayList(invitations));
+                    });
+                }
+            } catch (IOException e) {
+                Platform.runLater(() -> {
+                    showAlert(Alert.AlertType.ERROR, "Ошибка", "Не удалось загрузить приглашения");
+                });
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    private void cancelInvitation(Long invitationId) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Подтверждение отмены");
+        alert.setHeaderText("Отмена приглашения");
+        alert.setContentText("Вы уверены, что хотите отменить это приглашение?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            new Thread(() -> {
+                try {
+                    String apiUrl = "http://localhost:8080/api/invitations/" + invitationId;
+                    HttpURLConnection con = (HttpURLConnection) new URL(apiUrl).openConnection();
+                    con.setRequestMethod("DELETE");
+
+                    if (con.getResponseCode() == 204) {
+                        Platform.runLater(() -> {
+                            showAlert(Alert.AlertType.INFORMATION, "Успех", "Приглашение отменено");
+                            loadInvitations(); // Обновляем список
+                        });
+                    } else {
+                        Platform.runLater(() ->
+                                showAlert(Alert.AlertType.ERROR, "Ошибка", "Не удалось отменить приглашение")
+                        );
+                    }
+                } catch (IOException e) {
+                    Platform.runLater(() ->
+                            showAlert(Alert.AlertType.ERROR, "Ошибка сети", e.getMessage())
+                    );
+                    e.printStackTrace();
+                }
+            }).start();
         }
     }
 

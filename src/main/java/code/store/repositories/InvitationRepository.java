@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface InvitationRepository extends JpaRepository<InvitationEntity, Long> {
     Optional<List<InvitationEntity>> findByParticipantId(Long participantId);
+    List<InvitationEntity> findByOrganizerId (Long otganizerId);
 }

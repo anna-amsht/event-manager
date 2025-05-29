@@ -149,9 +149,27 @@
                   </content>
                 </Tab>
                 <Tab text="Приглашения">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                  </content>
+                   <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                         <children>
+                            <BorderPane prefHeight="510.0" prefWidth="589.0">
+                               <top>
+                                  <HBox prefHeight="36.0" prefWidth="589.0" stylesheets="@styles.css" BorderPane.alignment="CENTER"/>
+                               </top>
+                               <center>
+                                  <TableView fx:id="invitationsTableView" prefHeight="200.0" prefWidth="200.0" stylesheets="@styles.css">
+                                     <columns>
+                                        <TableColumn fx:id="eventTitleColumn" prefWidth="200.0" text="Мероприятие" styleClass="column-header"/>
+                                        <TableColumn fx:id="participantColumn" prefWidth="150.0" text="Участник" styleClass="column-header"/>
+                                        <TableColumn fx:id="statusColumn" prefWidth="120.0" text="Статус" styleClass="column-header"/>
+                                        <TableColumn fx:id="actionColumn" prefWidth="119.0" text="Действие" styleClass="column-header"/>
+                                     </columns>
+                                  </TableView>
+                               </center>
+                            </BorderPane>
+                         </children>
+                      </AnchorPane>
+                   </content>
                 </Tab>
               </tabs>
             </TabPane>

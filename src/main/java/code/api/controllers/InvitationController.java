@@ -12,6 +12,9 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
@@ -48,6 +51,15 @@ public class InvitationController {
     public ResponseEntity<Void> deleteInvitation(@PathVariable Long id) {
         invitationService.deleteInvitation(id);
         return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/organizer")
+    public ResponseEntity<List<InvitationDto>> getInvitationsByOrganizer(
+            @RequestParam Long organizerId) {
+        List<InvitationEntity> invitations = invitationService.findInvitationsByOrganizerId(organizerId);
+        List<InvitationDto> dtos = invitations.stream()
+                .map(invitationDtoFactory::makeInvitationDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
     @PatchMapping("/{invitationId}/{status}")
     public ResponseEntity<Void> updateInvitationStatus(

@@ -16,6 +16,7 @@ public class InvitationDtoFactory {
                 .id(entity.getId())
                 .eventTitle(entity.getEvent().getTitle())
                 .organizerName(entity.getOrganizer().getUsername())
+                .participantName(entity.getParticipant().getUsername())
                 .status(entity.getStatus())
                 .build();
 
