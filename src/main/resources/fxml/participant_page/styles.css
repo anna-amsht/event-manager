@@ -85,6 +85,7 @@
 }
 
 #backButton:hover{
+    -fx-text-fill: white;
     -fx-font-size: 22px;
 }
 

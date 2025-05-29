@@ -26,6 +26,7 @@ import java.util.ResourceBundle;
 public class RegisterController implements Initializable {
     @FXML private TextField userName;
     @FXML private PasswordField password;
+    @FXML private PasswordField password1;
     @FXML private Label errorLabel;
 
     @Override
@@ -35,10 +36,15 @@ public class RegisterController implements Initializable {
     public void register(MouseEvent mouseEvent) {
         String username = userName.getText().trim();
         String pass = password.getText().trim();
-
+        String pass1 = password1.getText().trim();
 
         if (username.isEmpty() || pass.isEmpty()) {
             showError("Поля не могут быть пустыми!");
+            return;
+        }
+
+        if (!pass.equals(pass1)) {
+            showError("Пароли не совпадают!");
             return;
         }
 

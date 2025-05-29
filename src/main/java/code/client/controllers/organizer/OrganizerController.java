@@ -3,10 +3,15 @@ package code.client.controllers.organizer;
 import code.api.dto.EventDto;
 import code.api.dto.InvitationDto;
 import code.api.dto.OrganizerDto;
+import code.api.dto.ParticipantDto;
+import code.api.factories.ParticipantDtoFactory;
+import code.api.services.ParticipantService;
 import code.client.App;
 import code.client.models.EventModel;
+import code.client.models.RoleContext;
 import code.client.models.SessionContext;
 import code.store.entities.InvitationStatus;
+import code.store.entities.ParticipantEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -30,7 +35,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -39,7 +48,9 @@ import java.util.stream.Collectors;
 public class OrganizerController implements Initializable {
     private Long organizerId;
     private final String baseUrl = "http://localhost:8080/api/events";
-
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    @FXML
+    private Label organizerNameLabel;
     @FXML
     private TableView<EventModel> eventTableView;
     @FXML
@@ -94,30 +105,31 @@ public class OrganizerController implements Initializable {
         });
 
         initializeInvitationsTable();
-
         OrganizerDto currentOrganizer = SessionContext.getCurrentOrganizer();
-        if (currentOrganizer != null) {
+        if (currentOrganizer != null && currentOrganizer.getUsername() != null) {
             this.organizerId = currentOrganizer.getId();
+            organizerNameLabel.setText(currentOrganizer.getUsername());
             loadEvents();
             loadInvitations();
         } else {
             System.err.println("Организатор не найден в сессии!");
+            organizerNameLabel.setText("Гость");
         }
 
     }
 
     private void initializeInvitationsTable() {
-        // Проверка инициализации столбцов
+
         if (eventTitleColumn == null || participantColumn == null ||
                 statusColumn == null || actionColumn == null) {
             System.err.println("Ошибка: Не все столбцы инициализированы в FXML!");
             return;
         }
 
-        // Настройка привязки данных
+
         eventTitleColumn.setCellValueFactory(new PropertyValueFactory<>("eventTitle"));
         participantColumn.setCellValueFactory(cellData -> {
-            // Предполагаем, что у InvitationDto есть поле participantName
+
             return new SimpleStringProperty(cellData.getValue().getParticipantName());
         });
 
@@ -140,7 +152,7 @@ public class OrganizerController implements Initializable {
             }
         });
 
-        // Настройка кнопки действия
+
         actionColumn.setCellFactory(param -> new TableCell<>() {
             private final Button cancelButton = new Button("Отменить");
 
@@ -379,7 +391,46 @@ public class OrganizerController implements Initializable {
 
     }
 
-    public void toUserMode(ActionEvent actionEvent) {
+    @FXML
+    private void toUserMode(ActionEvent actionEvent) {
+        OrganizerDto currentOrganizer = SessionContext.getCurrentOrganizer();
+        if (currentOrganizer == null || currentOrganizer.getUsername() == null) {
+            showAlert(Alert.AlertType.ERROR, "Ошибка", "Организатор не аутентифицирован");
+            return;
+        }
+
+        try {
+            // Запрашиваем или создаём участника
+            String jsonInput = String.format("{\"username\":\"%s\"}", currentOrganizer.getUsername());
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:8080/api/participants/get-or-create"))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(jsonInput))
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                // Участник получен или создан
+                ParticipantDto participantDto = objectMapper.readValue(response.body(), ParticipantDto.class);
+                SessionContext.setCurrentParticipant(participantDto);
+                SessionContext.setCurrentOrganizer(null); // Очищаем организатора
+                RoleContext.selectedRole = "participant";
+
+                // Переходим на страницу участника
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/participant_page/patPage.fxml"));
+                Parent root = loader.load();
+                Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+                stage.setScene(new Scene(root));
+                stage.show();
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Ошибка", "Не удалось получить или создать участника: " + response.statusCode());
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Ошибка", "Не удалось переключиться в режим участника: " + e.getMessage());
+        }
     }
 
     public void toExitFromProfile(ActionEvent actionEvent) {

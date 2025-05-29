@@ -47,13 +47,18 @@ public class RegisteredEventController implements Initializable {
     private void loadRegisteredEvents() {
         eventsContainer.getChildren().clear();
 
-        try {
+        eventsContainer.getChildren().clear();
 
+        try {
             Long participantId = SessionContext.getCurrentParticipant().getId();
+            if (participantId == null) {
+                showAlert("Ошибка", "Участник не авторизован");
+                return;
+            }
+
 
             String reservationsUrl = RESERVATIONS_API + "?participantId=" + participantId;
             String reservationsJson = sendGetRequest(reservationsUrl);
-
             List<ReservationDto> reservations = mapper.readValue(
                     reservationsJson,
                     new TypeReference<List<ReservationDto>>() {}
@@ -145,7 +150,7 @@ public class RegisteredEventController implements Initializable {
             sendDeleteRequest(deleteUrl);
 
             showAlert("Успех", "Регистрация отменена");
-            loadRegisteredEvents(); // Обновляем список
+            loadRegisteredEvents();
         } catch (IOException e) {
             e.printStackTrace();
             showAlert("Ошибка", "Не удалось отменить регистрацию");

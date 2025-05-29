@@ -1,14 +1,17 @@
 package code.api.services;
 
+import code.api.dto.ParticipantDto;
 import code.api.exceptions.NotFoundException;
 import code.store.entities.*;
 import code.store.repositories.InvitationRepository;
 import code.store.repositories.ParticipantRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,4 +41,22 @@ public class ParticipantService {
         return invitationRepository.findByParticipantId(participantId)
                 .orElseThrow(() -> new NotFoundException("Participant not found"));
     }
+
+
+
+    public Optional<ParticipantEntity> getByUsername(String username) {
+        return participantRepository.findByUsername(username);
+    }
+
+    public ParticipantEntity getOrCreateByUsername(String username) {
+        return participantRepository.findByUsername(username)
+                .orElseGet(() -> {
+                    ParticipantEntity participant = new ParticipantEntity();
+                    participant.setUsername(username);
+                    participant.setPassword("default"); // или скопируй пароль организатора, если надо
+                    participant.setRegistered(true);
+                    return participantRepository.save(participant);
+                });
+    }
+
 }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -56,16 +57,19 @@ public class ReservationController {
     }
 
     @GetMapping
-    public List<ReservationDto> getAllReservations() {
-        List<ReservationEntity> reservations = reservationRepository.findAll();
-        List<ReservationDto> result = new ArrayList<>();
-
-        for (ReservationEntity reservation : reservations) {
-            result.add(reservationDtoFactory.makeReservationDto(reservation));
+    public List<ReservationDto> getReservationsByParticipant(@RequestParam(required = false) Long participantId) {
+        List<ReservationEntity> reservations;
+        if (participantId != null) {
+            reservations = reservationRepository.findByParticipantId(participantId);
+        } else {
+            reservations = reservationRepository.findAll();
         }
 
-        return result;
+        return reservations.stream()
+                .map(reservationDtoFactory::makeReservationDto)
+                .collect(Collectors.toList());
     }
+
     @GetMapping("/by-participant-and-event")
     public ReservationDto getReservationByParticipantAndEvent(
             @RequestParam Long participantId,

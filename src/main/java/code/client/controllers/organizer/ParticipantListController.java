@@ -27,7 +27,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ParticipantListController {
-
     @FXML private TableView<ParticipantDto> participantsTableView;
     @FXML private TableColumn<ParticipantDto, String> usernameColumn;
     @FXML private Label titleLabel;

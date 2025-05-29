@@ -83,14 +83,6 @@
                                 <Insets left="30.0" top="10.0" />
                             </HBox.margin>
                         </FontIcon>
-                        <Label prefHeight="36.0" prefWidth="42.0" text="Label">
-                            <HBox.margin>
-                                <Insets left="15.0" top="15.0" />
-                            </HBox.margin>
-                            <font>
-                                <Font size="18.0" />
-                            </font>
-                        </Label>
                         <FontIcon fx:id="exitButton" iconLiteral="fa-close" iconSize="20" onMouseClicked="#closePr" text="" wrappingWidth="25.0">
                             <cursor>
                                 <Cursor fx:constant="HAND" />

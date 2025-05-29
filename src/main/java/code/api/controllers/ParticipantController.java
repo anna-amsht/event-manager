@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -114,5 +115,18 @@ public class ParticipantController {
         }
 
         return ResponseEntity.ok(dtos);
+    }
+
+    @GetMapping("/by-username")
+    public ResponseEntity<ParticipantEntity> findByUsername(@RequestParam String username) {
+        Optional<ParticipantEntity> participant = participantService.getByUsername(username);
+        return participant.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+    @PostMapping("/get-or-create")
+    public ResponseEntity<ParticipantEntity> getOrCreateParticipant(@RequestBody ParticipantEntity participant) {
+        ParticipantEntity result = participantService.getOrCreateByUsername(participant.getUsername());
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }

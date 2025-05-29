@@ -78,14 +78,14 @@ public class InvitationsController {
                 } else {
                     String error = readError(connection);
                     Platform.runLater(() -> {
-                        showAlert("Ошибка сервера",
+                        showAlert(Alert.AlertType.ERROR,"Ошибка сервера",
                                 "Код: " + responseCode + "\n" + error);
                         System.err.println("Ошибка при загрузке: " + error);
                     });
                 }
             } catch (IOException e) {
                 Platform.runLater(() -> {
-                    showAlert("Ошибка соединения", e.getMessage());
+                    showAlert(Alert.AlertType.ERROR,"Ошибка соединения", e.getMessage());
                     System.err.println("Ошибка сети: " + e.getMessage());
                 });
                 e.printStackTrace();
@@ -107,8 +107,8 @@ public class InvitationsController {
         }
     }
 
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
+    private void showAlert(Alert.AlertType type, String title, String message) {
+        Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
@@ -120,7 +120,7 @@ public class InvitationsController {
         InvitationDto selected = invitationsTable.getSelectionModel().getSelectedItem();
 
         if (selected == null) {
-            showAlert("Ошибка", "Выберите приглашение из списка");
+            showAlert(Alert.AlertType.ERROR,"Ошибка", "Выберите приглашение из списка");
             return;
         }
 
@@ -141,17 +141,17 @@ public class InvitationsController {
                     Platform.runLater(() -> {
                         selected.setStatus(InvitationStatus.ACCEPTED);
                         invitationsTable.refresh();
-                        showAlert("Успех", "Приглашение принято");
+                        showAlert(Alert.AlertType.INFORMATION,"Успех", "Приглашение принято");
                     });
                 } else {
                     String error = readError(connection);
                     Platform.runLater(() -> {
-                        showAlert("Ошибка", "Не удалось принять приглашение: " + error);
+                        showAlert(Alert.AlertType.ERROR,"Ошибка", "Не удалось принять приглашение: " + error);
                     });
                 }
             } catch (IOException e) {
                 Platform.runLater(() -> {
-                    showAlert("Ошибка сети", "Ошибка при отправке запроса: " + e.getMessage());
+                    showAlert(Alert.AlertType.ERROR,"Ошибка сети", "Ошибка при отправке запроса: " + e.getMessage());
                 });
                 e.printStackTrace();
             }
@@ -163,7 +163,7 @@ public class InvitationsController {
         InvitationDto selected = invitationsTable.getSelectionModel().getSelectedItem();
 
         if (selected == null) {
-            showAlert("Ошибка", "Выберите приглашение из списка");
+            showAlert(Alert.AlertType.ERROR,"Ошибка", "Выберите приглашение из списка");
             return;
         }
 
@@ -184,17 +184,17 @@ public class InvitationsController {
                     Platform.runLater(() -> {
                         selected.setStatus(InvitationStatus.DECLINED);
                         invitationsTable.refresh();
-                        showAlert("Успех", "Приглашение отклонено");
+                        showAlert(Alert.AlertType.INFORMATION,"Успех", "Приглашение отклонено");
                     });
                 } else {
                     String error = readError(connection);
                     Platform.runLater(() -> {
-                        showAlert("Ошибка", "Не удалось отклонить приглашение: " + error);
+                        showAlert(Alert.AlertType.ERROR,"Ошибка", "Не удалось отклонить приглашение: " + error);
                     });
                 }
             } catch (IOException e) {
                 Platform.runLater(() -> {
-                    showAlert("Ошибка сети", "Ошибка при отправке запроса: " + e.getMessage());
+                    showAlert(Alert.AlertType.ERROR,"Ошибка сети", "Ошибка при отправке запроса: " + e.getMessage());
                 });
                 e.printStackTrace();
             }

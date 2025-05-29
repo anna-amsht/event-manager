@@ -84,7 +84,7 @@
                                 <Insets left="30.0" top="10.0" />
                             </HBox.margin>
                         </FontIcon>
-                        <Label prefHeight="36.0" prefWidth="42.0" text="Label">
+                        <Label fx:id="participantNameLabel" maxWidth="700.0" minWidth="300.0" prefHeight="36.0" prefWidth="345.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold" text="Label">
                             <HBox.margin>
                                 <Insets left="15.0" top="15.0" />
                             </HBox.margin>
@@ -97,7 +97,7 @@
                                 <Cursor fx:constant="HAND" />
                             </cursor>
                             <HBox.margin>
-                                <Insets left="635.0" top="20.0" />
+                                <Insets left="325.0" top="20.0" />
                             </HBox.margin>
                         </FontIcon>
                     </children></HBox>

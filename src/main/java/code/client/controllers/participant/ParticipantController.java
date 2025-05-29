@@ -1,15 +1,18 @@
 package code.client.controllers.participant;
 
+import code.api.dto.OrganizerDto;
 import code.api.dto.ParticipantDto;
 import code.client.App;
 import code.client.models.SessionContext;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
@@ -18,9 +21,22 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ParticipantController implements Initializable {
+    @FXML
+    private Label participantNameLabel;
+    Long participantId;
 
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {}
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        ParticipantDto currentParticipant = SessionContext.getCurrentParticipant();
+        if (currentParticipant != null && currentParticipant.getUsername() != null) {
+            this.participantId = currentParticipant.getId();
+            participantNameLabel.setText(currentParticipant.getUsername());
+
+        } else {
+            System.err.println("Участник не найден в сессии!");
+            participantNameLabel.setText("Гость");
+        }
+    }
 
     public void toExitFromProfile(ActionEvent actionEvent) {
         try {
