@@ -53,7 +53,7 @@ public class ParticipantService {
                 .orElseGet(() -> {
                     ParticipantEntity participant = new ParticipantEntity();
                     participant.setUsername(username);
-                    participant.setPassword("default"); // или скопируй пароль организатора, если надо
+                    participant.setPassword("default");
                     participant.setRegistered(true);
                     return participantRepository.save(participant);
                 });
